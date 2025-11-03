@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "description": "Realtime, event-driven social platform for gamers",
+  "packageManager": "pnpm@10.18.3",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "pnpm": ">=10.0.0"
   },
   "scripts": {
     "build": "turbo run build",
