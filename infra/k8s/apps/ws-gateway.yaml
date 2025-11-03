@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ws-gateway
+  namespace: community-gaming
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ws-gateway
+  template:
+    metadata:
+      labels:
+        app: ws-gateway
+    spec:
+      containers:
+        - name: ws-gateway
+          image: community-gaming/ws-gateway:latest
+          ports:
+            - containerPort: 3002
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3002"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ws-gateway
+  namespace: community-gaming
+spec:
+  selector:
+    app: ws-gateway
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3002
+  type: ClusterIP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ws-gateway-hpa
+  namespace: community-gaming
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ws-gateway
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

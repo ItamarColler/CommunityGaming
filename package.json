@@ -1,0 +1,41 @@
+{
+  "name": "community-gaming",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Realtime, event-driven social platform for gamers",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --concurrency=20",
+    "dev:web": "turbo run dev --filter=@community-gaming/web",
+    "dev:api": "turbo run dev --filter=@community-gaming/api-gateway --filter=@community-gaming/ws-gateway",
+    "dev:services": "turbo run dev --filter=./services/*",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "test:integration": "turbo run test:integration",
+    "test:e2e": "turbo run test:e2e",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "db:migrate": "turbo run db:migrate",
+    "db:seed": "turbo run db:seed",
+    "db:studio": "turbo run db:studio"
+  },
+  "devDependencies": {
+    "@turbo/gen": "^1.12.4",
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.4",
+    "typescript": "^5.9.3"
+  },
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "packages/*"
+  ]
+}

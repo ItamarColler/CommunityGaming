@@ -1,0 +1,86 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cg-postgres
+    environment:
+      POSTGRES_USER: community_gaming
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: community_gaming
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U community_gaming']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: cg-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nats:
+    image: nats:2-alpine
+    container_name: cg-nats
+    ports:
+      - '4222:4222'  # Client connections
+      - '8222:8222'  # HTTP management
+      - '6222:6222'  # Cluster routes
+    command: ['-js', '-m', '8222']
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:8222/healthz']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23-alpine
+    container_name: cg-clickhouse
+    environment:
+      CLICKHOUSE_DB: analytics
+      CLICKHOUSE_USER: analytics_user
+      CLICKHOUSE_PASSWORD: dev_password
+    ports:
+      - '8123:8123'  # HTTP
+      - '9000:9000'  # Native
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:8123/ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.6
+    container_name: cg-meilisearch
+    environment:
+      MEILI_MASTER_KEY: dev_master_key
+      MEILI_ENV: development
+    ports:
+      - '7700:7700'
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:7700/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+  clickhouse_data:
+  meilisearch_data:
