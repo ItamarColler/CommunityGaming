@@ -20,7 +20,7 @@
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
-    "pino": "^8.17.2"
+    "pino": "^10.1.0"
   },
   "devDependencies": {
     "@community-gaming/config": "workspace:*",
