@@ -28,9 +28,9 @@
     "db:studio": "turbo run db:studio"
   },
   "devDependencies": {
-    "@turbo/gen": "^1.12.4",
+    "@turbo/gen": "^2.6.0",
     "prettier": "^3.2.5",
-    "turbo": "^1.12.4",
+    "turbo": "^2.6.0",
     "typescript": "^5.9.3"
   },
   "workspaces": [
