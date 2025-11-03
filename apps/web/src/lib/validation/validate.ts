@@ -25,10 +25,7 @@ function formatZodErrors(error: ZodError): string[] {
  * @param body - The request body to validate
  * @returns ValidationResult with typed data or errors
  */
-export function validateBody<T>(
-  schema: z.ZodSchema<T>,
-  body: unknown
-): ValidationResult<T> {
+export function validateBody<T>(schema: z.ZodSchema<T>, body: unknown): ValidationResult<T> {
   try {
     const data = schema.parse(body);
     return {

@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsup",
     "start": "node dist/index.js",
-    "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
@@ -26,7 +25,8 @@
     "@types/node": "^20.11.0",
     "prisma": "^5.8.1",
     "tsup": "^8.0.1",
-    "tsx": "^4.7.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
 }

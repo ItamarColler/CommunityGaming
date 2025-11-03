@@ -1,8 +1,4 @@
-import type {
-  LoginCredentials,
-  AuthResponse,
-  RefreshResponse,
-} from '../types';
+import type { LoginRequest, LoginResponse, RefreshSessionResponse } from '@community-gaming/types';
 
 const API_BASE = '/api/auth';
 
@@ -15,7 +11,7 @@ export const authService = {
    * Sign in with email and password
    * Returns user data and stores session in httpOnly cookie
    */
-  async signIn(credentials: LoginCredentials): Promise<AuthResponse> {
+  async signIn(credentials: LoginRequest): Promise<LoginResponse> {
     const response = await fetch(`${API_BASE}/login`, {
       method: 'POST',
       headers: {
@@ -30,7 +26,7 @@ export const authService = {
     if (!response.ok) {
       const error = await response.json().catch(() => ({
         success: false,
-        error: { message: 'Network error occurred' },
+        error: { message: 'Network error occurred', code: 'NETWORK_ERROR' },
       }));
       return error;
     }
@@ -42,7 +38,7 @@ export const authService = {
    * Refresh the current session
    * Validates and refreshes the httpOnly session cookie
    */
-  async refreshSession(): Promise<RefreshResponse> {
+  async refreshSession(): Promise<RefreshSessionResponse> {
     const response = await fetch(`${API_BASE}/refresh`, {
       method: 'POST',
       headers: {
@@ -54,7 +50,7 @@ export const authService = {
     if (!response.ok) {
       return {
         success: false,
-        error: { message: 'Failed to refresh session' },
+        error: { message: 'Failed to refresh session', code: 'REFRESH_FAILED' },
       };
     }
 

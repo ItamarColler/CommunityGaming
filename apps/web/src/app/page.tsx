@@ -4,9 +4,7 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <h1 className={styles.title}>CommunityGaming</h1>
-      <p className={styles.description}>
-        Realtime, event-driven social platform for gamers
-      </p>
+      <p className={styles.description}>Realtime, event-driven social platform for gamers</p>
     </main>
   );
 }

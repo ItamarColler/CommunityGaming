@@ -1,13 +1,54 @@
 import { z } from 'zod';
 
+// User type enumeration matching Prisma schema
+export enum UserType {
+  PLAYER = 'PLAYER',
+  CREATOR = 'CREATOR',
+  MODERATOR = 'MODERATOR',
+  ADMIN = 'ADMIN',
+}
+
+export const UserTypeSchema = z.nativeEnum(UserType);
+
+// Full User schema matching database model
 export const UserSchema = z.object({
   id: z.string().uuid(),
   email: z.string().email(),
-  username: z.string().min(3).max(32),
-  displayName: z.string().max(64).optional(),
-  avatarUrl: z.string().url().optional(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  username: z.string().min(3).max(30),
+  passwordHash: z.string(),
+  displayName: z.string().max(50).optional().nullable(),
+  avatar: z.string().url().optional().nullable(),
+  userType: UserTypeSchema.default(UserType.PLAYER),
+
+  // OAuth providers
+  oauthProvider: z.string().optional().nullable(),
+  oauthId: z.string().optional().nullable(),
+
+  // Account status
+  isVerified: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+  isBanned: z.boolean().default(false),
+
+  // Timestamps
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  lastLoginAt: z.coerce.date().optional().nullable(),
 });
 
+// Public user schema (without sensitive fields)
+export const PublicUserSchema = UserSchema.omit({
+  passwordHash: true,
+  oauthProvider: true,
+  oauthId: true,
+});
+
+// Re-export validation schemas and types
+export {
+  type CreateUserInput,
+  type UpdateUserInput,
+  CreateUserInputSchema,
+  UpdateUserInputSchema,
+} from './validation/auth';
+
 export type User = z.infer<typeof UserSchema>;
+export type PublicUser = z.infer<typeof PublicUserSchema>;

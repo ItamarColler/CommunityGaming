@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { signIn } from '@/features/auth/slice/authSlice';
 import { selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
-import { RegisterCredentialsSchema } from '@/features/auth/types';
-import type { RegisterCredentials } from '@/features/auth/types';
+import { RegisterRequestSchema, type RegisterRequest } from '@community-gaming/types';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -21,7 +20,7 @@ export function RegisterForm() {
     }
   }, [isAuthenticated, router]);
 
-  const [formData, setFormData] = useState<RegisterCredentials>({
+  const [formData, setFormData] = useState<RegisterRequest>({
     username: '',
     email: '',
     password: '',
@@ -39,7 +38,7 @@ export function RegisterForm() {
     setServerError('');
 
     // Validate form data with Zod
-    const validation = RegisterCredentialsSchema.safeParse(formData);
+    const validation = RegisterRequestSchema.safeParse(formData);
 
     if (!validation.success) {
       const errors: Record<string, string> = {};
@@ -77,10 +76,12 @@ export function RegisterForm() {
 
       // After successful registration, sign in automatically (session already set by API)
       // Just dispatch the signIn action to update Redux state
-      await dispatch(signIn({
-        email: formData.email,
-        password: formData.password,
-      }));
+      await dispatch(
+        signIn({
+          email: formData.email,
+          password: formData.password,
+        })
+      );
 
       // Redirect to home
       router.push('/');
@@ -89,7 +90,7 @@ export function RegisterForm() {
     }
   };
 
-  const handleInputChange = (field: keyof RegisterCredentials, value: string) => {
+  const handleInputChange = (field: keyof RegisterRequest, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear field error when user types
     if (validationErrors[field]) {
@@ -137,7 +138,9 @@ export function RegisterForm() {
             {validationErrors.username && (
               <span className="field-error">{validationErrors.username}</span>
             )}
-            <p className="field-hint">3-30 characters, letters, numbers, underscores, and hyphens only</p>
+            <p className="field-hint">
+              3-30 characters, letters, numbers, underscores, and hyphens only
+            </p>
           </div>
 
           {/* Display Name field */}
@@ -236,11 +239,7 @@ export function RegisterForm() {
           </div>
 
           {/* Submit button */}
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={isLoading}
-          >
+          <button type="submit" className="submit-button" disabled={isLoading}>
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>

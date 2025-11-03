@@ -109,11 +109,11 @@ Message latency < 150 ms intra-region
 Presence reconnects smoothed via jitter/backoff.
 
 Rollout Phases
-Phase	Focus	Highlights
-MVP	Identity + Communities, text chat, presence, S3 uploads, event pipeline.	Minimal analytics and moderation.
-Private Beta	Matchmaking (Redis ZSET), lobbies, voice (WebRTC SFU), creator micro-clubs.	Early referral loops and Meilisearch.
-Public Launch	UGC marketplace + ledger, trust scores, appeals, OAuth with Steam/Riot/Xbox.	SDK/embed for partners.
-Scale	Regional edges, sharded chat, B2B white-label mode.	Global localization and growth.
+Phase Focus Highlights
+MVP Identity + Communities, text chat, presence, S3 uploads, event pipeline. Minimal analytics and moderation.
+Private Beta Matchmaking (Redis ZSET), lobbies, voice (WebRTC SFU), creator micro-clubs. Early referral loops and Meilisearch.
+Public Launch UGC marketplace + ledger, trust scores, appeals, OAuth with Steam/Riot/Xbox. SDK/embed for partners.
+Scale Regional edges, sharded chat, B2B white-label mode. Global localization and growth.
 Next Steps for Development
 
 As the project evolves, update this file to include:

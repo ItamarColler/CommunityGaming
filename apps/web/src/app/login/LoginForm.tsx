@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { signIn } from '@/features/auth/slice/authSlice';
 import { selectError, selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
-import { LoginCredentialsSchema } from '@/features/auth/types';
-import type { LoginCredentials } from '@/features/auth/types';
+import { LoginRequestSchema, type LoginRequest } from '@community-gaming/types';
 
 export function LoginForm() {
   const router = useRouter();
@@ -22,7 +21,7 @@ export function LoginForm() {
     }
   }, [isAuthenticated, router]);
 
-  const [formData, setFormData] = useState<LoginCredentials>({
+  const [formData, setFormData] = useState<LoginRequest>({
     email: '',
     password: '',
   });
@@ -34,7 +33,7 @@ export function LoginForm() {
     setValidationErrors({});
 
     // Validate form data with Zod
-    const validation = LoginCredentialsSchema.safeParse(formData);
+    const validation = LoginRequestSchema.safeParse(formData);
 
     if (!validation.success) {
       const errors: Record<string, string> = {};
@@ -55,7 +54,7 @@ export function LoginForm() {
     }
   };
 
-  const handleInputChange = (field: keyof LoginCredentials, value: string) => {
+  const handleInputChange = (field: keyof LoginRequest, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear field error when user types
     if (validationErrors[field]) {
@@ -129,16 +128,13 @@ export function LoginForm() {
               <span className="field-error">{validationErrors.password}</span>
             )}
             <p className="password-hint">
-              Password must be at least 8 characters with uppercase, lowercase, number, and special character
+              Password must be at least 8 characters with uppercase, lowercase, number, and special
+              character
             </p>
           </div>
 
           {/* Submit button */}
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={isLoading}
-          >
+          <button type="submit" className="submit-button" disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>

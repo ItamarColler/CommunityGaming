@@ -9,13 +9,15 @@
   "scripts": {
     "clean": "rm -rf .turbo node_modules"
   },
-  "devDependencies": {
+  "dependencies": {
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.1.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react": "^7.33.2"
+  },
+  "devDependencies": {
     "typescript": "^5.9.3"
   }
 }
