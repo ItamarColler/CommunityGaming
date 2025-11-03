@@ -8,7 +8,7 @@ import {
   setSessionCookie,
   validateCSRFHeader,
 } from '@/lib/auth/session';
-import type { RefreshResponse, User } from '@/features/auth/types';
+import { UserType, type RefreshSessionResponse, type PublicUser } from '@community-gaming/types';
 
 /**
  * POST /api/auth/refresh
@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: { message: 'Invalid request' },
-        } satisfies RefreshResponse,
+          error: { message: 'Invalid request', code: 'CSRF_ERROR' },
+        } satisfies RefreshSessionResponse,
         { status: 403 }
       );
     }
@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            error: { message: 'No valid session or refresh token' },
-          } satisfies RefreshResponse,
+            error: { message: 'No valid session or refresh token', code: 'NO_SESSION' },
+          } satisfies RefreshSessionResponse,
           { status: 401 }
         );
       }
@@ -52,8 +52,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            error: { message: 'Invalid refresh token' },
-          } satisfies RefreshResponse,
+            error: { message: 'Invalid refresh token', code: 'INVALID_TOKEN' },
+          } satisfies RefreshSessionResponse,
           { status: 401 }
         );
       }
@@ -65,8 +65,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            error: { message: 'User not found' },
-          } satisfies RefreshResponse,
+            error: { message: 'User not found', code: 'USER_NOT_FOUND' },
+          } satisfies RefreshSessionResponse,
           { status: 401 }
         );
       }
@@ -81,10 +81,9 @@ export async function POST(request: NextRequest) {
         {
           success: true,
           data: {
-            user,
             expiresAt,
           },
-        } satisfies RefreshResponse,
+        } satisfies RefreshSessionResponse,
         { status: 200 }
       );
     }
@@ -97,8 +96,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: { message: 'User not found' },
-        } satisfies RefreshResponse,
+          error: { message: 'User not found', code: 'USER_NOT_FOUND' },
+        } satisfies RefreshSessionResponse,
         { status: 401 }
       );
     }
@@ -113,10 +112,9 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         data: {
-          user,
           expiresAt,
         },
-      } satisfies RefreshResponse,
+      } satisfies RefreshSessionResponse,
       { status: 200 }
     );
   } catch (error) {
@@ -124,8 +122,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: { message: 'Internal server error' },
-      } satisfies RefreshResponse,
+        error: { message: 'Internal server error', code: 'SERVER_ERROR' },
+      } satisfies RefreshSessionResponse,
       { status: 500 }
     );
   }
@@ -135,15 +133,20 @@ export async function POST(request: NextRequest) {
  * Mock fetch user - REPLACE WITH REAL API CALL
  * This should call your identity service backend
  */
-async function mockFetchUser(userId: string): Promise<User | null> {
+async function mockFetchUser(userId: string): Promise<PublicUser | null> {
   // Mock: Return a user
   return {
     id: userId,
     email: 'user@example.com',
     username: 'user',
     displayName: 'User',
-    avatar: undefined,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    avatar: null,
+    userType: UserType.PLAYER,
+    isVerified: false,
+    isActive: true,
+    isBanned: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    lastLoginAt: new Date(),
   };
 }

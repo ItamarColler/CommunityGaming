@@ -5,8 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { signIn } from '@/features/auth/slice/authSlice';
 import { selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
-import { RegisterCredentialsSchema } from '@/features/auth/types';
-import type { RegisterCredentials } from '@/features/auth/types';
+import { RegisterRequestSchema, type RegisterRequest } from '@community-gaming/types';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -21,7 +20,7 @@ export function RegisterForm() {
     }
   }, [isAuthenticated, router]);
 
-  const [formData, setFormData] = useState<RegisterCredentials>({
+  const [formData, setFormData] = useState<RegisterRequest>({
     username: '',
     email: '',
     password: '',
@@ -39,7 +38,7 @@ export function RegisterForm() {
     setServerError('');
 
     // Validate form data with Zod
-    const validation = RegisterCredentialsSchema.safeParse(formData);
+    const validation = RegisterRequestSchema.safeParse(formData);
 
     if (!validation.success) {
       const errors: Record<string, string> = {};
@@ -89,7 +88,7 @@ export function RegisterForm() {
     }
   };
 
-  const handleInputChange = (field: keyof RegisterCredentials, value: string) => {
+  const handleInputChange = (field: keyof RegisterRequest, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear field error when user types
     if (validationErrors[field]) {

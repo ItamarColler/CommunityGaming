@@ -8,8 +8,7 @@ import {
   validateCSRFHeader,
 } from '@/lib/auth/session';
 import { validateBody } from '@/lib/validation/validate';
-import { RegisterRequestSchema } from '@/features/auth/types';
-import type { RegisterResponse, User } from '@/features/auth/types';
+import { UserType, RegisterRequestSchema, type RegisterResponse, type PublicUser } from '@community-gaming/types';
 
 /**
  * POST /api/auth/register
@@ -89,12 +88,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         data: {
-          user: {
-            id: newUser.id,
-            email: newUser.email,
-            username: newUser.username,
-            displayName: newUser.displayName,
-          },
+          user: newUser,
           expiresAt,
         },
       } satisfies RegisterResponse,
@@ -122,7 +116,7 @@ async function mockRegisterUser(data: {
   password: string;
   displayName?: string;
 }): Promise<
-  | { success: true; user: User }
+  | { success: true; user: PublicUser }
   | { success: false; error: string; code: string; status: number }
 > {
   // Mock: Check if email already exists (in real app, check database)
@@ -159,14 +153,19 @@ async function mockRegisterUser(data: {
   }
 
   // Mock: Create new user
-  const newUser: User = {
+  const newUser: PublicUser = {
     id: crypto.randomUUID(),
     email: data.email,
     username: data.username,
     displayName: data.displayName || data.username,
-    avatar: undefined,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    avatar: null,
+    userType: UserType.PLAYER,
+    isVerified: false,
+    isActive: true,
+    isBanned: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    lastLoginAt: new Date(),
   };
 
   // In production: Hash password, store in database, send verification email, etc.

@@ -1,6 +1,6 @@
 import { getSessionFromCookie } from './session';
 import type { RootState } from '@/lib/redux/store';
-import type { User } from '@/features/auth/types';
+import { UserType, type PublicUser } from '@community-gaming/types';
 
 /**
  * Preload auth state from server-side session cookie
@@ -44,15 +44,20 @@ export async function preloadAuthState(): Promise<Partial<RootState> | undefined
  * Mock fetch user - REPLACE WITH REAL API CALL
  * This should call your identity service backend
  */
-async function mockFetchUser(userId: string, email: string): Promise<User | null> {
+async function mockFetchUser(userId: string, email: string): Promise<PublicUser | null> {
   // In production, fetch from identity service using userId
   return {
     id: userId,
     email,
     username: email.split('@')[0],
     displayName: email.split('@')[0],
-    avatar: undefined,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    avatar: null,
+    userType: UserType.PLAYER,
+    isVerified: false,
+    isActive: true,
+    isBanned: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    lastLoginAt: new Date(),
   };
 }

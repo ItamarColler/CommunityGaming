@@ -9,7 +9,7 @@ import {
 } from '@/lib/auth/session';
 import { validateBody } from '@/lib/validation/validate';
 import { LoginSchema } from '../dto/login.dto';
-import type { AuthResponse, User } from '@/features/auth/types';
+import { UserType, type LoginResponse, type PublicUser } from '@community-gaming/types';
 
 /**
  * POST /api/auth/login
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: { message: 'Invalid request', code: 'CSRF_ERROR' },
-        } satisfies AuthResponse,
+        } satisfies LoginResponse,
         { status: 403 }
       );
     }
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
             message: validation.errors?.join(', ') || 'Validation failed',
             code: 'VALIDATION_ERROR',
           },
-        } satisfies AuthResponse,
+        } satisfies LoginResponse,
         { status: 400 }
       );
     }
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: { message: 'Invalid credentials', code: 'AUTH_FAILED' },
-        } satisfies AuthResponse,
+        } satisfies LoginResponse,
         { status: 401 }
       );
     }
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
           user: mockUser,
           expiresAt,
         },
-      } satisfies AuthResponse,
+      } satisfies LoginResponse,
       { status: 200 }
     );
   } catch (error) {
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: { message: 'Internal server error', code: 'SERVER_ERROR' },
-      } satisfies AuthResponse,
+      } satisfies LoginResponse,
       { status: 500 }
     );
   }
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
 async function mockAuthenticateUser(
   email: string,
   password: string
-): Promise<User | null> {
+): Promise<PublicUser | null> {
   // Mock: Accept any email with password that meets requirements
   // In production, this calls your identity service
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -119,8 +119,13 @@ async function mockAuthenticateUser(
     email,
     username: email.split('@')[0],
     displayName: email.split('@')[0],
-    avatar: undefined,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    avatar: null,
+    userType: UserType.PLAYER,
+    isVerified: false,
+    isActive: true,
+    isBanned: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    lastLoginAt: new Date(),
   };
 }

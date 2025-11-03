@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose';
+import type { PublicUser } from '@community-gaming/types';
 import { cookies } from 'next/headers';
-import type { User } from '@/features/auth/types';
 
 const SESSION_SECRET = new TextEncoder().encode(
   process.env.SESSION_SECRET || 'dev-secret-change-in-production-min-32-chars'
@@ -24,7 +24,7 @@ export interface SessionPayload {
 /**
  * Create a new session token
  */
-export async function createSessionToken(user: User): Promise<string> {
+export async function createSessionToken(user: PublicUser): Promise<string> {
   const expiresAt = Date.now() + SESSION_DURATION;
 
   return new SignJWT({
