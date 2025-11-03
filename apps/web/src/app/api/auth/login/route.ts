@@ -101,10 +101,7 @@ export async function POST(request: NextRequest) {
  * Mock authentication - REPLACE WITH REAL API CALL
  * This should call your identity service backend
  */
-async function mockAuthenticateUser(
-  email: string,
-  password: string
-): Promise<PublicUser | null> {
+async function mockAuthenticateUser(email: string, password: string): Promise<PublicUser | null> {
   // Mock: Accept any email with password that meets requirements
   // In production, this calls your identity service
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

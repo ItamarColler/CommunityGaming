@@ -1,8 +1,4 @@
-import type {
-  LoginRequest,
-  LoginResponse,
-  RefreshSessionResponse,
-} from '@community-gaming/types';
+import type { LoginRequest, LoginResponse, RefreshSessionResponse } from '@community-gaming/types';
 
 const API_BASE = '/api/auth';
 

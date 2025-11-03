@@ -128,16 +128,13 @@ export function LoginForm() {
               <span className="field-error">{validationErrors.password}</span>
             )}
             <p className="password-hint">
-              Password must be at least 8 characters with uppercase, lowercase, number, and special character
+              Password must be at least 8 characters with uppercase, lowercase, number, and special
+              character
             </p>
           </div>
 
           {/* Submit button */}
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={isLoading}
-          >
+          <button type="submit" className="submit-button" disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>

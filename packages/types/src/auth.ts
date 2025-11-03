@@ -25,39 +25,51 @@ export const RefreshTokenSchema = z.object({
 // Login response schema
 export const LoginResponseSchema = z.object({
   success: z.boolean(),
-  data: z.object({
-    user: PublicUserSchema,
-    expiresAt: z.string(),
-  }).optional(),
-  error: z.object({
-    message: z.string(),
-    code: z.string(),
-  }).optional(),
+  data: z
+    .object({
+      user: PublicUserSchema,
+      expiresAt: z.string(),
+    })
+    .optional(),
+  error: z
+    .object({
+      message: z.string(),
+      code: z.string(),
+    })
+    .optional(),
 });
 
 // Register response schema
 export const RegisterResponseSchema = z.object({
   success: z.boolean(),
-  data: z.object({
-    user: PublicUserSchema,
-    expiresAt: z.string(),
-  }).optional(),
-  error: z.object({
-    message: z.string(),
-    code: z.string(),
-  }).optional(),
+  data: z
+    .object({
+      user: PublicUserSchema,
+      expiresAt: z.string(),
+    })
+    .optional(),
+  error: z
+    .object({
+      message: z.string(),
+      code: z.string(),
+    })
+    .optional(),
 });
 
 // Refresh session response schema
 export const RefreshSessionResponseSchema = z.object({
   success: z.boolean(),
-  data: z.object({
-    expiresAt: z.string(),
-  }).optional(),
-  error: z.object({
-    message: z.string(),
-    code: z.string(),
-  }).optional(),
+  data: z
+    .object({
+      expiresAt: z.string(),
+    })
+    .optional(),
+  error: z
+    .object({
+      message: z.string(),
+      code: z.string(),
+    })
+    .optional(),
 });
 
 // Auth session type (used in client state)

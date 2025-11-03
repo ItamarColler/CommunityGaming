@@ -37,9 +37,7 @@ export const signIn = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error instanceof Error ? error.message : 'Sign in failed'
-      );
+      return rejectWithValue(error instanceof Error ? error.message : 'Sign in failed');
     }
   }
 );
@@ -56,16 +54,12 @@ export const refreshSession = createAsyncThunk(
       const response = await authService.refreshSession();
 
       if (!response.success || !response.data) {
-        return rejectWithValue(
-          response.error?.message || 'Session refresh failed'
-        );
+        return rejectWithValue(response.error?.message || 'Session refresh failed');
       }
 
       return response.data;
     } catch (error) {
-      return rejectWithValue(
-        error instanceof Error ? error.message : 'Session refresh failed'
-      );
+      return rejectWithValue(error instanceof Error ? error.message : 'Session refresh failed');
     }
   }
 );
@@ -74,23 +68,20 @@ export const refreshSession = createAsyncThunk(
  * Async thunk: Sign out
  * Clears Redux state and httpOnly cookie via API
  */
-export const signOut = createAsyncThunk(
-  'auth/signOut',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await authService.signOut();
+export const signOut = createAsyncThunk('auth/signOut', async (_, { rejectWithValue }) => {
+  try {
+    const response = await authService.signOut();
 
-      if (!response.success) {
-        return rejectWithValue('Sign out failed');
-      }
-
-      return;
-    } catch (error) {
-      // Even if API call fails, clear local state
-      return;
+    if (!response.success) {
+      return rejectWithValue('Sign out failed');
     }
+
+    return;
+  } catch (error) {
+    // Even if API call fails, clear local state
+    return;
   }
-);
+});
 
 /**
  * Auth slice

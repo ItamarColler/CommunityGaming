@@ -43,6 +43,7 @@ pnpm dev
 ```
 
 This will start:
+
 - **Web App** (Next.js): http://localhost:3000
 - **API Gateway** (Fastify): http://localhost:3001
 - **WebSocket Gateway**: ws://localhost:3002
@@ -110,6 +111,7 @@ pnpm format:check         # Check formatting
 ## Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 14 (App Router, RSC)
 - **Styling**: CSS Modules + Global CSS Variables
 - **State**: Zustand + TanStack Query
@@ -117,6 +119,7 @@ pnpm format:check         # Check formatting
 - **Validation**: Zod
 
 ### Backend
+
 - **API Gateway**: Fastify
 - **Services**: Fastify microservices
 - **WebSocket**: ws library
@@ -127,6 +130,7 @@ pnpm format:check         # Check formatting
 - **Search**: Meilisearch
 
 ### Infrastructure
+
 - **Monorepo**: Turborepo + pnpm workspaces
 - **Container Orchestration**: Kubernetes
 - **IaC**: Terraform

@@ -76,10 +76,12 @@ export function RegisterForm() {
 
       // After successful registration, sign in automatically (session already set by API)
       // Just dispatch the signIn action to update Redux state
-      await dispatch(signIn({
-        email: formData.email,
-        password: formData.password,
-      }));
+      await dispatch(
+        signIn({
+          email: formData.email,
+          password: formData.password,
+        })
+      );
 
       // Redirect to home
       router.push('/');
@@ -136,7 +138,9 @@ export function RegisterForm() {
             {validationErrors.username && (
               <span className="field-error">{validationErrors.username}</span>
             )}
-            <p className="field-hint">3-30 characters, letters, numbers, underscores, and hyphens only</p>
+            <p className="field-hint">
+              3-30 characters, letters, numbers, underscores, and hyphens only
+            </p>
           </div>
 
           {/* Display Name field */}
@@ -235,11 +239,7 @@ export function RegisterForm() {
           </div>
 
           {/* Submit button */}
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={isLoading}
-          >
+          <button type="submit" className="submit-button" disabled={isLoading}>
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>

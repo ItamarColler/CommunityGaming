@@ -8,7 +8,12 @@ import {
   validateCSRFHeader,
 } from '@/lib/auth/session';
 import { validateBody } from '@/lib/validation/validate';
-import { UserType, RegisterRequestSchema, type RegisterResponse, type PublicUser } from '@community-gaming/types';
+import {
+  UserType,
+  RegisterRequestSchema,
+  type RegisterResponse,
+  type PublicUser,
+} from '@community-gaming/types';
 
 /**
  * POST /api/auth/register

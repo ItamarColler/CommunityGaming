@@ -62,7 +62,8 @@ export const StatusCodeDescription: Record<StatusCode, string> = {
   [StatusCode.NOT_ACCEPTABLE]: 'The resource cannot generate content acceptable to the client',
   [StatusCode.REQUEST_TIMEOUT]: 'The server timed out waiting for the request',
   [StatusCode.CONFLICT]: 'The request conflicts with the current state of the server',
-  [StatusCode.GONE]: 'The requested resource is no longer available and will not be available again',
+  [StatusCode.GONE]:
+    'The requested resource is no longer available and will not be available again',
   [StatusCode.UNPROCESSABLE_ENTITY]: 'The request is well-formed but contains semantic errors',
   [StatusCode.TOO_MANY_REQUESTS]: 'Too many requests have been sent in a given timeframe',
 
@@ -71,7 +72,8 @@ export const StatusCodeDescription: Record<StatusCode, string> = {
   [StatusCode.NOT_IMPLEMENTED]: 'The server does not support the functionality required',
   [StatusCode.BAD_GATEWAY]: 'The server received an invalid response from an upstream server',
   [StatusCode.SERVICE_UNAVAILABLE]: 'The server is temporarily unable to handle the request',
-  [StatusCode.GATEWAY_TIMEOUT]: 'The server did not receive a timely response from an upstream server',
+  [StatusCode.GATEWAY_TIMEOUT]:
+    'The server did not receive a timely response from an upstream server',
 };
 
 /**
@@ -123,20 +125,15 @@ export class ApiError extends Error {
   public readonly details?: unknown;
   public readonly isOperational: boolean;
 
-  constructor(
-    statusCode: StatusCode,
-    message: string,
-    details?: unknown,
-    isOperational = true
-  ) {
+  constructor(statusCode: StatusCode, message: string, details?: unknown, isOperational = true) {
     super(message);
     this.statusCode = statusCode;
     this.details = details;
     this.isOperational = isOperational;
 
     // Maintains proper stack trace for where error was thrown (Node.js only)
-    if (typeof (Error as any).captureStackTrace === 'function') {
-      (Error as any).captureStackTrace(this, this.constructor);
+    if ('captureStackTrace' in Error && typeof Error.captureStackTrace === 'function') {
+      Error.captureStackTrace(this, this.constructor);
     }
     Object.setPrototypeOf(this, ApiError.prototype);
   }
@@ -145,13 +142,7 @@ export class ApiError extends Error {
    * Convert the error to a standardized response format
    */
   toResponse(path?: string, requestId?: string): ErrorResponse {
-    return createErrorResponse(
-      this.statusCode,
-      this.message,
-      this.details,
-      path,
-      requestId
-    );
+    return createErrorResponse(this.statusCode, this.message, this.details, path, requestId);
   }
 }
 

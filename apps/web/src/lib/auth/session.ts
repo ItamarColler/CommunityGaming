@@ -53,9 +53,7 @@ export async function createRefreshToken(userId: string): Promise<string> {
 /**
  * Verify and decode a session token
  */
-export async function verifySessionToken(
-  token: string
-): Promise<SessionPayload | null> {
+export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
     const { payload } = await jwtVerify(token, SESSION_SECRET);
     return payload as unknown as SessionPayload;

@@ -18,5 +18,3 @@ declare module '*.module.sass' {
 declare module '*.css';
 declare module '*.scss';
 declare module '*.sass';
-
-

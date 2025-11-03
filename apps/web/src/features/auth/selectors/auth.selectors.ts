@@ -9,10 +9,7 @@ const selectAuthState = (state: RootState) => state.auth;
 /**
  * Select current user
  */
-export const selectUser = createSelector(
-  [selectAuthState],
-  (auth) => auth.user
-);
+export const selectUser = createSelector([selectAuthState], (auth) => auth.user);
 
 /**
  * Select authentication status
@@ -25,18 +22,12 @@ export const selectIsAuthenticated = createSelector(
 /**
  * Select loading state
  */
-export const selectIsLoading = createSelector(
-  [selectAuthState],
-  (auth) => auth.isLoading
-);
+export const selectIsLoading = createSelector([selectAuthState], (auth) => auth.isLoading);
 
 /**
  * Select error state
  */
-export const selectError = createSelector(
-  [selectAuthState],
-  (auth) => auth.error
-);
+export const selectError = createSelector([selectAuthState], (auth) => auth.error);
 
 /**
  * Select session expiration timestamp
@@ -49,21 +40,15 @@ export const selectSessionExpiresAt = createSelector(
 /**
  * Check if session is expired
  */
-export const selectIsSessionExpired = createSelector(
-  [selectSessionExpiresAt],
-  (expiresAt) => {
-    if (!expiresAt) return true;
-    return new Date(expiresAt) < new Date();
-  }
-);
+export const selectIsSessionExpired = createSelector([selectSessionExpiresAt], (expiresAt) => {
+  if (!expiresAt) return true;
+  return new Date(expiresAt) < new Date();
+});
 
 /**
  * Select user ID (common use case)
  */
-export const selectUserId = createSelector(
-  [selectUser],
-  (user) => user?.id ?? null
-);
+export const selectUserId = createSelector([selectUser], (user) => user?.id ?? null);
 
 /**
  * Select user display information

@@ -24,6 +24,7 @@ kubectl apply -f ingress/
 ## HPA (Horizontal Pod Autoscaler)
 
 All critical services have HPA configured:
+
 - API Gateway: 3-10 replicas
 - WS Gateway: 3-20 replicas
 - Services: 2-8 replicas each

@@ -1,4 +1,3 @@
-
 import { User } from '@community-gaming/types';
 // Web-specific Auth state (extends shared AuthState for Redux)
 export interface AuthState {
