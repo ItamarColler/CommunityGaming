@@ -3,11 +3,13 @@
 ## Infrastructure & DevOps
 
 ### Docker & Containerization
+
 **Status**: Not Started
 **Priority**: Medium
 **Blocked by**: Core application development
 
 **Tasks**:
+
 - [ ] Create Dockerfiles for all services:
   - [ ] `apps/web/Dockerfile` - Next.js web application
   - [ ] `apps/api-gateway/Dockerfile` - API Gateway service
@@ -29,6 +31,7 @@
 - [ ] Document Docker setup in README
 
 **Notes**:
+
 - Workflow is currently disabled: `.github/workflows/docker-build.yml.disabled`
 - Should use multi-stage builds to minimize image size
 - Consider using pnpm's workspace support in Docker builds
@@ -39,11 +42,13 @@
 ## Testing
 
 ### Test Infrastructure
+
 **Status**: Removed (blocked by MSW environment issues)
 **Priority**: High
 **Next Steps**: Re-evaluate testing approach
 
 **Tasks**:
+
 - [ ] Decide on testing strategy (unit, integration, e2e)
 - [ ] Choose testing framework (Vitest was removed due to MSW issues)
 - [ ] Set up test infrastructure that works with monorepo
@@ -51,6 +56,7 @@
 - [ ] Add tests back to CI pipeline
 
 **Notes**:
+
 - Previous setup used Vitest + MSW but had webidl-conversions errors in WSL
 - May need different mocking approach or environment setup
 - Consider alternatives: Jest, native Node test runner, or MSW with better polyfills
