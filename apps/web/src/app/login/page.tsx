@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { LoginForm } from './LoginForm';
 import styles from './login.module.css';
 
@@ -14,7 +15,9 @@ export const metadata: Metadata = {
 export default function LoginPage() {
   return (
     <main className={styles.loginPage}>
-      <LoginForm />
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginForm />
+      </Suspense>
     </main>
   );
 }
