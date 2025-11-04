@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { signIn } from '@/features/auth/slice/authSlice';
 import { selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
 import { RegisterRequestSchema, type RegisterRequest } from '@community-gaming/types';
+import styles from './register.module.css';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -106,24 +107,24 @@ export function RegisterForm() {
   };
 
   return (
-    <div className="register-form-container">
-      <div className="register-card">
-        <div className="register-header">
+    <div className={styles.registerFormContainer}>
+      <div className={styles.registerCard}>
+        <div className={styles.registerHeader}>
           <h1>Create Account</h1>
           <p>Join CommunityGaming today</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="register-form">
+        <form onSubmit={handleSubmit} className={styles.registerForm}>
           {/* Global error message */}
           {serverError && (
-            <div className="error-banner">
-              <span className="error-icon">⚠️</span>
+            <div className={styles.errorBanner}>
+              <span className={styles.errorIcon}>⚠️</span>
               <span>{serverError}</span>
             </div>
           )}
 
           {/* Username field */}
-          <div className="form-field">
+          <div className={styles.formField}>
             <label htmlFor="username">Username *</label>
             <input
               id="username"
@@ -136,15 +137,15 @@ export function RegisterForm() {
               autoComplete="username"
             />
             {validationErrors.username && (
-              <span className="field-error">{validationErrors.username}</span>
+              <span className={styles.fieldError}>{validationErrors.username}</span>
             )}
-            <p className="field-hint">
+            <p className={styles.fieldHint}>
               3-30 characters, letters, numbers, underscores, and hyphens only
             </p>
           </div>
 
           {/* Display Name field */}
-          <div className="form-field">
+          <div className={styles.formField}>
             <label htmlFor="displayName">Display Name</label>
             <input
               id="displayName"
@@ -157,12 +158,12 @@ export function RegisterForm() {
               autoComplete="name"
             />
             {validationErrors.displayName && (
-              <span className="field-error">{validationErrors.displayName}</span>
+              <span className={styles.fieldError}>{validationErrors.displayName}</span>
             )}
           </div>
 
           {/* Email field */}
-          <div className="form-field">
+          <div className={styles.formField}>
             <label htmlFor="email">Email *</label>
             <input
               id="email"
@@ -175,14 +176,14 @@ export function RegisterForm() {
               autoComplete="email"
             />
             {validationErrors.email && (
-              <span className="field-error">{validationErrors.email}</span>
+              <span className={styles.fieldError}>{validationErrors.email}</span>
             )}
           </div>
 
           {/* Password field */}
-          <div className="form-field">
+          <div className={styles.formField}>
             <label htmlFor="password">Password *</label>
-            <div className="password-input-wrapper">
+            <div className={styles.passwordInputWrapper}>
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
@@ -196,24 +197,24 @@ export function RegisterForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="toggle-password"
+                className={styles.togglePassword}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? '🙈' : '👁️'}
               </button>
             </div>
             {validationErrors.password && (
-              <span className="field-error">{validationErrors.password}</span>
+              <span className={styles.fieldError}>{validationErrors.password}</span>
             )}
-            <p className="field-hint">
+            <p className={styles.fieldHint}>
               Minimum 8 characters with uppercase, lowercase, number, and special character
             </p>
           </div>
 
           {/* Confirm Password field */}
-          <div className="form-field">
+          <div className={styles.formField}>
             <label htmlFor="confirmPassword">Confirm Password *</label>
-            <div className="password-input-wrapper">
+            <div className={styles.passwordInputWrapper}>
               <input
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -227,24 +228,24 @@ export function RegisterForm() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="toggle-password"
+                className={styles.togglePassword}
                 aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
                 {showConfirmPassword ? '🙈' : '👁️'}
               </button>
             </div>
             {validationErrors.confirmPassword && (
-              <span className="field-error">{validationErrors.confirmPassword}</span>
+              <span className={styles.fieldError}>{validationErrors.confirmPassword}</span>
             )}
           </div>
 
           {/* Submit button */}
-          <button type="submit" className="submit-button" disabled={isLoading}>
+          <button type="submit" className={styles.submitButton} disabled={isLoading}>
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <div className="register-footer">
+        <div className={styles.registerFooter}>
           <p>
             Already have an account? <a href="/login">Sign in</a>
           </p>

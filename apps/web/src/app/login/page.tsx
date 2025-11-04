@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { LoginForm } from './LoginForm';
-import './login.css';
+import styles from './login.module.css';
 
 export const metadata: Metadata = {
   title: 'Login - CommunityGaming',
@@ -13,8 +14,10 @@ export const metadata: Metadata = {
  */
 export default function LoginPage() {
   return (
-    <main className="login-page">
-      <LoginForm />
+    <main className={styles.loginPage}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LoginForm />
+      </Suspense>
     </main>
   );
 }

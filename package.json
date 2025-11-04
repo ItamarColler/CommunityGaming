@@ -14,7 +14,7 @@
     "dev:web": "turbo run dev --filter=@community-gaming/web",
     "dev:api": "turbo run dev --filter=@community-gaming/api-gateway --filter=@community-gaming/ws-gateway",
     "dev:services": "turbo run dev --filter=./services/*",
-    "lint": "node packages/config/node_modules/eslint/bin/eslint.js \"apps/**/*.{ts,tsx}\" \"services/**/*.{ts,tsx}\" \"packages/**/*.{ts,tsx}\" --resolve-plugins-relative-to ./packages/config --max-warnings=0",
+    "lint": "eslint \"apps/**/*.{ts,tsx}\" \"services/**/*.{ts,tsx}\" \"packages/**/*.{ts,tsx}\" --max-warnings=0",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "typecheck": "turbo run typecheck",
@@ -27,8 +27,12 @@
   },
   "devDependencies": {
     "@turbo/gen": "^1.12.4",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
     "prettier": "^3.2.5",
-    "turbo": "^1.12.4",
+    "turbo": "^2.6.0",
     "typescript": "^5.9.3"
   },
   "workspaces": [

@@ -1,52 +1,52 @@
-/* Registration Page Styles */
+/* Login Page Styles */
 
-.register-page {
+.loginPage {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem 1rem;
+  padding: 1rem;
 }
 
-.register-form-container {
+.loginFormContainer {
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
 }
 
-.register-card {
+.loginCard {
   background: white;
   border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   padding: 2.5rem;
 }
 
-.register-header {
+.loginHeader {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.register-header h1 {
+.loginHeader h1 {
   font-size: 1.875rem;
   font-weight: 700;
   color: #1a202c;
   margin: 0 0 0.5rem 0;
 }
 
-.register-header p {
+.loginHeader p {
   font-size: 0.875rem;
   color: #718096;
   margin: 0;
 }
 
-.register-form {
+.loginForm {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 /* Error banner */
-.error-banner {
+.errorBanner {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -58,25 +58,25 @@
   font-size: 0.875rem;
 }
 
-.error-icon {
+.errorIcon {
   flex-shrink: 0;
   font-size: 1.25rem;
 }
 
 /* Form fields */
-.form-field {
+.formField {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.form-field label {
+.formField label {
   font-size: 0.875rem;
   font-weight: 600;
   color: #2d3748;
 }
 
-.form-field input {
+.formField input {
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 1rem;
@@ -86,39 +86,39 @@
   background-color: white;
 }
 
-.form-field input:focus {
+.formField input:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.form-field input:disabled {
+.formField input:disabled {
   background-color: #f7fafc;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-.form-field input.error {
+.formField input.error {
   border-color: #fc8181;
 }
 
-.form-field input.error:focus {
+.formField input.error:focus {
   border-color: #f56565;
   box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.1);
 }
 
 /* Password input wrapper */
-.password-input-wrapper {
+.passwordInputWrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.password-input-wrapper input {
+.passwordInputWrapper input {
   padding-right: 3rem;
 }
 
-.toggle-password {
+.togglePassword {
   position: absolute;
   right: 0.75rem;
   background: none;
@@ -130,32 +130,32 @@
   transition: opacity 0.2s;
 }
 
-.toggle-password:hover {
+.togglePassword:hover {
   opacity: 1;
 }
 
-.toggle-password:focus {
+.togglePassword:focus {
   outline: 2px solid #667eea;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 /* Field error message */
-.field-error {
+.fieldError {
   font-size: 0.875rem;
   color: #e53e3e;
   margin-top: -0.25rem;
 }
 
-/* Field hint */
-.field-hint {
+/* Password hint */
+.passwordHint {
   font-size: 0.75rem;
   color: #718096;
   margin: -0.25rem 0 0 0;
 }
 
 /* Submit button */
-.submit-button {
+.submitButton {
   width: 100%;
   padding: 0.875rem 1.5rem;
   font-size: 1rem;
@@ -167,69 +167,107 @@
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-  margin-top: 0.5rem;
 }
 
-.submit-button:hover:not(:disabled) {
+.submitButton:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
 }
 
-.submit-button:active:not(:disabled) {
+.submitButton:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.submit-button:disabled {
+.submitButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
-.submit-button:focus {
+.submitButton:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
 }
 
-/* Registration footer */
-.register-footer {
+/* Login footer */
+.loginFooter {
   margin-top: 1.5rem;
   text-align: center;
   font-size: 0.875rem;
   color: #718096;
 }
 
-.register-footer a {
+.loginFooter a {
   color: #667eea;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.register-footer a:hover {
+.loginFooter a:hover {
   color: #764ba2;
   text-decoration: underline;
 }
 
 /* Responsive design */
-@media (max-width: 520px) {
-  .register-page {
-    padding: 1rem;
+@media (max-width: 768px) {
+  .loginPage {
+    padding: 0.5rem;
   }
 
-  .register-card {
+  .loginFormContainer {
+    max-width: 100%;
+  }
+
+  .loginCard {
     padding: 2rem 1.5rem;
   }
 
-  .register-header h1 {
+  .loginHeader h1 {
+    font-size: 1.625rem;
+  }
+
+  .loginHeader p {
+    font-size: 0.8125rem;
+  }
+
+  .formField input {
+    font-size: 1rem; /* Keep at 16px to prevent iOS zoom */
+    padding: 0.875rem;
+  }
+
+  .submitButton {
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginCard {
+    padding: 1.75rem 1.25rem;
+    border-radius: 8px;
+  }
+
+  .loginHeader {
+    margin-bottom: 1.5rem;
+  }
+
+  .loginHeader h1 {
     font-size: 1.5rem;
   }
 
-  .form-field input {
-    font-size: 0.875rem;
-    padding: 0.65rem 0.875rem;
+  .loginForm {
+    gap: 1.25rem;
   }
 
-  .register-form {
-    gap: 1rem;
+  .passwordHint {
+    font-size: 0.6875rem;
+    line-height: 1.4;
+  }
+}
+
+/* Fix for iOS Safari input zoom */
+@supports (-webkit-touch-callout: none) {
+  .formField input {
+    font-size: max(16px, 1rem);
   }
 }

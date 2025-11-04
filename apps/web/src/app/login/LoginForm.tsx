@@ -1,25 +1,30 @@
 'use client';
 
 import { useState, useEffect, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { signIn } from '@/features/auth/slice/authSlice';
 import { selectError, selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
 import { LoginRequestSchema, type LoginRequest } from '@community-gaming/types';
+import styles from './login.module.css';
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectIsLoading);
   const error = useAppSelector(selectError);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
+  // Get return URL from query params
+  const returnUrl = searchParams.get('returnUrl') || '/';
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/');
+      router.push(returnUrl);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, returnUrl]);
 
   const [formData, setFormData] = useState<LoginRequest>({
     email: '',
@@ -49,8 +54,8 @@ export function LoginForm() {
     const result = await dispatch(signIn(formData));
 
     if (signIn.fulfilled.match(result)) {
-      // Redirect to home or dashboard after successful login
-      router.push('/');
+      // Redirect to return URL or home after successful login
+      router.push(returnUrl);
     }
   };
 
@@ -67,24 +72,24 @@ export function LoginForm() {
   };
 
   return (
-    <div className="login-form-container">
-      <div className="login-card">
-        <div className="login-header">
+    <div className={styles.loginFormContainer}>
+      <div className={styles.loginCard}>
+        <div className={styles.loginHeader}>
           <h1>Welcome Back</h1>
           <p>Sign in to your CommunityGaming account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className={styles.loginForm}>
           {/* Global error message */}
           {error && (
-            <div className="error-banner">
-              <span className="error-icon">⚠️</span>
+            <div className={styles.errorBanner}>
+              <span className={styles.errorIcon}>⚠️</span>
               <span>{error}</span>
             </div>
           )}
 
           {/* Email field */}
-          <div className="form-field">
+          <div className={styles.formField}>
             <label htmlFor="email">Email</label>
             <input
               id="email"
@@ -97,14 +102,14 @@ export function LoginForm() {
               autoComplete="email"
             />
             {validationErrors.email && (
-              <span className="field-error">{validationErrors.email}</span>
+              <span className={styles.fieldError}>{validationErrors.email}</span>
             )}
           </div>
 
           {/* Password field */}
-          <div className="form-field">
+          <div className={styles.formField}>
             <label htmlFor="password">Password</label>
-            <div className="password-input-wrapper">
+            <div className={styles.passwordInputWrapper}>
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
@@ -118,28 +123,28 @@ export function LoginForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="toggle-password"
+                className={styles.togglePassword}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? '🙈' : '👁️'}
               </button>
             </div>
             {validationErrors.password && (
-              <span className="field-error">{validationErrors.password}</span>
+              <span className={styles.fieldError}>{validationErrors.password}</span>
             )}
-            <p className="password-hint">
+            <p className={styles.passwordHint}>
               Password must be at least 8 characters with uppercase, lowercase, number, and special
               character
             </p>
           </div>
 
           {/* Submit button */}
-          <button type="submit" className="submit-button" disabled={isLoading}>
+          <button type="submit" className={styles.submitButton} disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <div className="login-footer">
+        <div className={styles.loginFooter}>
           <p>
             Don't have an account? <a href="/register">Sign up</a>
           </p>
