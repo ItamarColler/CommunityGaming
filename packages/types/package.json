@@ -19,7 +19,7 @@
     "clean": "rm -rf dist .turbo node_modules"
   },
   "dependencies": {
-    "zod": "^3.22.4"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@community-gaming/config": "workspace:*",
