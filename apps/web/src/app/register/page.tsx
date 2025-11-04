@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { RegisterForm } from './RegisterForm';
-import './register.css';
+import styles from './register.module.css';
 
 export const metadata: Metadata = {
   title: 'Register - CommunityGaming',
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
  */
 export default function RegisterPage() {
   return (
-    <main className="register-page">
+    <main className={styles.registerPage}>
       <RegisterForm />
     </main>
   );

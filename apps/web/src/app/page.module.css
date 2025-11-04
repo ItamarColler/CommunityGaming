@@ -4,7 +4,14 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 6rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: white;
 }
 
 .title {
@@ -15,5 +22,75 @@
 
 .description {
   font-size: 1.125rem;
-  color: var(--color-text-secondary);
+  opacity: 0.9;
+}
+
+.userInfo {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  margin-bottom: 2rem;
+  min-width: 300px;
+}
+
+.userInfo h2 {
+  font-size: 1.5rem;
+  color: #1a202c;
+  margin: 0 0 1rem 0;
+}
+
+.email {
+  font-size: 1rem;
+  color: #718096;
+  margin: 0.5rem 0;
+}
+
+.userType {
+  font-size: 0.875rem;
+  color: #667eea;
+  font-weight: 600;
+  margin: 1rem 0 0 0;
+  text-transform: capitalize;
+}
+
+.signOutButton {
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background: #e53e3e;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.4);
+}
+
+.signOutButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(229, 62, 62, 0.5);
+}
+
+.signOutButton:active {
+  transform: translateY(0);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .userInfo {
+    padding: 2rem 1.5rem;
+    min-width: unset;
+    width: 100%;
+    max-width: 400px;
+  }
 }

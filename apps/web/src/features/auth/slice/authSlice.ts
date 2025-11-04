@@ -11,13 +11,85 @@ export interface AuthState {
   sessionExpiresAt: string | null;
 }
 
-// Initial state
+// LocalStorage keys
+const AUTH_TOKEN_KEY = 'auth_token';
+const AUTH_USER_KEY = 'auth_user';
+const AUTH_EXPIRES_KEY = 'auth_expires';
+
+// LocalStorage helpers (client-side only)
+const loadAuthFromStorage = (): Partial<AuthState> => {
+  // Only run in browser
+  if (typeof window === 'undefined') return {};
+
+  try {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    const userStr = localStorage.getItem(AUTH_USER_KEY);
+    const expiresAt = localStorage.getItem(AUTH_EXPIRES_KEY);
+
+    if (!token || !userStr || !expiresAt) {
+      return {};
+    }
+
+    // Check if session has expired
+    if (new Date(expiresAt) < new Date()) {
+      clearAuthFromStorage();
+      return {};
+    }
+
+    const user = JSON.parse(userStr);
+
+    return {
+      user,
+      isAuthenticated: true,
+      sessionExpiresAt: expiresAt,
+    };
+  } catch (error) {
+    console.error('Failed to load auth from storage:', error);
+    clearAuthFromStorage();
+    return {};
+  }
+};
+
+const saveAuthToStorage = (user: PublicUser, expiresAt: string, token?: string) => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+    localStorage.setItem(AUTH_EXPIRES_KEY, expiresAt);
+    if (token) {
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+    }
+  } catch (error) {
+    console.error('Failed to save auth to storage:', error);
+  }
+};
+
+const clearAuthFromStorage = () => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(AUTH_USER_KEY);
+    localStorage.removeItem(AUTH_EXPIRES_KEY);
+  } catch (error) {
+    console.error('Failed to clear auth from storage:', error);
+  }
+};
+
+// Get auth token for API requests
+export const getAuthToken = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(AUTH_TOKEN_KEY);
+};
+
+// Initial state - load from localStorage if available
+const storedAuth = loadAuthFromStorage();
 const initialState: AuthState = {
-  user: null,
-  isAuthenticated: false,
+  user: storedAuth.user || null,
+  isAuthenticated: storedAuth.isAuthenticated || false,
   isLoading: false,
   error: null,
-  sessionExpiresAt: null,
+  sessionExpiresAt: storedAuth.sessionExpiresAt || null,
 };
 
 /**
@@ -115,6 +187,9 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.sessionExpiresAt = null;
+
+      // Clear localStorage
+      clearAuthFromStorage();
     },
   },
   extraReducers: (builder) => {
@@ -133,6 +208,9 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.isAuthenticated = true;
         state.sessionExpiresAt = action.payload.expiresAt;
+
+        // Save to localStorage
+        saveAuthToStorage(action.payload.user, action.payload.expiresAt);
       }
 
       state.error = null;
@@ -169,6 +247,9 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.sessionExpiresAt = null;
       state.error = (action.payload as string) || 'Session expired';
+
+      // Clear localStorage
+      clearAuthFromStorage();
     });
 
     // ==================== SIGN OUT ====================
@@ -184,6 +265,9 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.sessionExpiresAt = null;
       state.error = null;
+
+      // Clear localStorage
+      clearAuthFromStorage();
     });
 
     // When sign out fails - still clear everything for safety
@@ -192,6 +276,9 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.sessionExpiresAt = null;
+
+      // Clear localStorage
+      clearAuthFromStorage();
     });
   },
 });
