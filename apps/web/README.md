@@ -41,6 +41,7 @@ import styles from './filename.module.css';
 ### Usage Examples
 
 **Good ✅**
+
 ```tsx
 // LoginForm.tsx
 import styles from './login.module.css';
@@ -82,13 +83,16 @@ export function LoginForm() {
 ```
 
 **Bad ❌**
+
 ```tsx
 // Don't use regular CSS files for component styles
-import './login.css';  // ❌ Wrong
+import './login.css'; // ❌ Wrong
 
 export function LoginForm() {
   return (
-    <div className="login-form-container">  {/* ❌ No scoping */}
+    <div className="login-form-container">
+      {' '}
+      {/* ❌ No scoping */}
       <h1 className="title">Welcome</h1>
     </div>
   );
@@ -98,6 +102,7 @@ export function LoginForm() {
 ### When to Use Global CSS
 
 Use global CSS (`src/styles/globals.css`) **only** for:
+
 - CSS resets
 - Global typography
 - CSS variables (colors, spacing, etc.)
