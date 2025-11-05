@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "nodemon --watch next.config.js --watch tsconfig.json --watch .env --watch .env.local --exec 'next dev'",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@community-gaming/config": "workspace:*",
+    "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@types/react": "^18.2.0",
@@ -40,6 +41,7 @@
     "@vitest/ui": "^4.0.6",
     "jsdom": "^27.1.0",
     "msw": "^2.11.6",
+    "nodemon": "^3.1.9",
     "vitest": "^4.0.6"
   }
 }

@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { signIn } from '@/features/auth/slice/authSlice';
 import { selectError, selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
 import { LoginRequestSchema, type LoginRequest } from '@community-gaming/types';
+import EyeOpen from '@assets/icons/eyeOpen.svg';
+import EyeClose from '@assets/icons/eyeClose.svg';
 import styles from './login.module.css';
 
 export function LoginForm() {
@@ -126,7 +128,7 @@ export function LoginForm() {
                 className={styles.togglePassword}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? '🙈' : '👁️'}
+                {showPassword ? <EyeClose width={20} height={20} /> : <EyeOpen width={20} height={20} />}
               </button>
             </div>
             {validationErrors.password && (

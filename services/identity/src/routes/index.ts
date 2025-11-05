@@ -1,11 +1,17 @@
-import type { FastifyInstance } from 'fastify';
+import { type FastifyInstance } from 'fastify';
 import { healthCheckController } from '../controllers/health.controller';
-import { getUserCountController } from '../controllers/user.controller';
+import user from './user/user.router';
 
-export async function registerRoutes(fastify: FastifyInstance) {
+/**
+ * Main router plugin
+ */
+async function router(fastify: FastifyInstance) {
   // Health check routes
   fastify.get('/health', healthCheckController);
 
-  // User routes
-  fastify.get('/users/count', getUserCountController);
+  // Register user router
+  await fastify.register(user);
 }
+
+export default router;
+

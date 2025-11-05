@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { prisma } from '../db/client';
+import { prisma } from '../db/prisma.client';
 
 export async function healthCheckController(request: FastifyRequest, reply: FastifyReply) {
   try {

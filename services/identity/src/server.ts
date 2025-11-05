@@ -1,8 +1,8 @@
 import Fastify from 'fastify';
 import { createLogger } from '@community-gaming/utils';
-import { prisma, disconnectDb } from './db/client';
+import { prisma, disconnectDb } from './db/prisma.client';
 import { env } from './config/env';
-import { registerRoutes } from './routes';
+import router from './routes';
 
 const logger = createLogger('identity-service');
 const fastify = Fastify({ logger: true });
@@ -32,12 +32,13 @@ const start = async () => {
     logger.info('Database connected successfully');
 
     // Register all routes
-    await registerRoutes(fastify);
+    await fastify.register(router);
 
     await fastify.listen({ port: env.PORT, host: '0.0.0.0' });
     logger.info(`Identity service running on port ${env.PORT}`);
   } catch (err) {
     logger.error('Failed to start server:', err);
+    console.error('Full error:', err);
     await disconnectDb();
     process.exit(1);
   }

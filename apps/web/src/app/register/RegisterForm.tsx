@@ -3,9 +3,10 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { signIn } from '@/features/auth/slice/authSlice';
 import { selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
 import { RegisterRequestSchema, type RegisterRequest } from '@community-gaming/types';
+import EyeOpen from '@assets/icons/eyeOpen.svg';
+import EyeClose from '@assets/icons/eyeClose.svg';
 import styles from './register.module.css';
 
 export function RegisterForm() {
@@ -30,6 +31,7 @@ export function RegisterForm() {
   });
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -61,10 +63,7 @@ export function RegisterForm() {
         },
         credentials: 'include',
         body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          displayName: formData.displayName || undefined,
+         ...formData
         }),
       });
 
@@ -75,17 +74,13 @@ export function RegisterForm() {
         return;
       }
 
-      // After successful registration, sign in automatically (session already set by API)
-      // Just dispatch the signIn action to update Redux state
-      await dispatch(
-        signIn({
-          email: formData.email,
-          password: formData.password,
-        })
-      );
+      // Show success message
+      setSuccessMessage('Account created successfully! Redirecting to login...');
 
-      // Redirect to home
-      router.push('/');
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
     } catch (error) {
       setServerError('An unexpected error occurred. Please try again.');
     }
@@ -115,6 +110,14 @@ export function RegisterForm() {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.registerForm}>
+          {/* Success message */}
+          {successMessage && (
+            <div className={styles.successBanner}>
+              <span className={styles.successIcon}>✓</span>
+              <span>{successMessage}</span>
+            </div>
+          )}
+
           {/* Global error message */}
           {serverError && (
             <div className={styles.errorBanner}>
@@ -200,7 +203,7 @@ export function RegisterForm() {
                 className={styles.togglePassword}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? '🙈' : '👁️'}
+                {showPassword ? <EyeClose width={20} height={20} /> : <EyeOpen width={20} height={20} />}
               </button>
             </div>
             {validationErrors.password && (
@@ -231,7 +234,7 @@ export function RegisterForm() {
                 className={styles.togglePassword}
                 aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
-                {showConfirmPassword ? '🙈' : '👁️'}
+                {showConfirmPassword ? <EyeClose width={20} height={20} /> : <EyeOpen width={20} height={20} />}
               </button>
             </div>
             {validationErrors.confirmPassword && (

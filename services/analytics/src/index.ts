@@ -1,11 +1,11 @@
-import Fastify from 'fastify';
+import {fastify} from 'fastify';
 import { createLogger } from '@community-gaming/utils';
 
 const logger = createLogger('analytics-service');
-const fastify = Fastify({ logger: true });
+const app = fastify({ logger: true });
 
 // Health check
-fastify.get('/health', async () => {
+app.get('/health', async () => {
   return { status: 'ok', service: 'analytics' };
 });
 
@@ -13,7 +13,7 @@ fastify.get('/health', async () => {
 const start = async () => {
   try {
     const port = process.env.PORT ? parseInt(process.env.PORT) : 4007;
-    await fastify.listen({ port, host: '0.0.0.0' });
+    await app.listen({ port, host: '0.0.0.0' });
     logger.info(`Analytics service running on port ${port}`);
   } catch (err) {
     logger.error(err);
