@@ -8,7 +8,7 @@ import { getAuthToken } from '@/features/auth/slice/authSlice';
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001',
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
     prepareHeaders: (headers) => {
       // Add auth token to requests if available
       const token = getAuthToken();

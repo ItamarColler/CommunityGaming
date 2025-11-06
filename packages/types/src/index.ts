@@ -1,8 +1,6 @@
 // Shared TypeScript types and Zod schemas
-
 export * from './user';
 export * from './auth';
 export * from './community';
 export * from './events';
-export * from './validation';
 export * from './statusCodes';

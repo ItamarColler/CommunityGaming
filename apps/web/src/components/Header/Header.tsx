@@ -19,22 +19,13 @@ export default function Header() {
         </div>
 
         <nav className={styles.nav}>
-          <button
-            onClick={() => router.push('/home')}
-            className={styles.navLink}
-          >
+          <button onClick={() => router.push('/home')} className={styles.navLink}>
             Home
           </button>
-          <button
-            onClick={() => router.push('/profile')}
-            className={styles.navLink}
-          >
+          <button onClick={() => router.push('/profile')} className={styles.navLink}>
             Profile
           </button>
-          <button
-            onClick={handleLogout}
-            className={styles.logoutButton}
-          >
+          <button onClick={handleLogout} className={styles.logoutButton}>
             Logout
           </button>
         </nav>

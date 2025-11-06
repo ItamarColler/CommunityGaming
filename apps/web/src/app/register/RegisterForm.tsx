@@ -192,7 +192,11 @@ export function RegisterForm() {
                 className={styles.togglePassword}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? <EyeClose width={20} height={20} /> : <EyeOpen width={20} height={20} />}
+                {showPassword ? (
+                  <EyeClose width={20} height={20} />
+                ) : (
+                  <EyeOpen width={20} height={20} />
+                )}
               </button>
             </div>
             {validationErrors.password && (
@@ -223,7 +227,11 @@ export function RegisterForm() {
                 className={styles.togglePassword}
                 aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
-                {showConfirmPassword ? <EyeClose width={20} height={20} /> : <EyeOpen width={20} height={20} />}
+                {showConfirmPassword ? (
+                  <EyeClose width={20} height={20} />
+                ) : (
+                  <EyeOpen width={20} height={20} />
+                )}
               </button>
             </div>
             {validationErrors.confirmPassword && (

@@ -12,10 +12,8 @@ export interface AuthContext {
  * Extended Fastify request with auth context
  * Use this type for all authenticated endpoints
  */
-export interface AuthenticatedRequest<T = Record<string, unknown>> extends FastifyRequest {
-  body: T & {
-    auth: AuthContext;
-  };
+export interface AuthenticatedRequest extends FastifyRequest {
+  auth: AuthContext;
 }
 
 /**

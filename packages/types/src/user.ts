@@ -38,13 +38,5 @@ export const PublicUserSchema = UserSchema.omit({
   oauthId: true,
 });
 
-// Re-export validation schemas and types
-export {
-  type CreateUserInput,
-  type UpdateUserInput,
-  CreateUserInputSchema,
-  UpdateUserInputSchema,
-} from './validation/auth';
-
 export type User = z.infer<typeof UserSchema>;
 export type PublicUser = z.infer<typeof PublicUserSchema>;

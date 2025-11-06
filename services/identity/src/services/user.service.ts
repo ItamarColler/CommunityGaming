@@ -139,6 +139,27 @@ class UserService {
 
     return user;
   }
+
+  /**
+   * Find a user by email address
+   * @param email - Email address to search for
+   * @returns The user (including passwordHash) or null if not found
+   */
+  async findUserByEmail(email: string) {
+    return await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+    });
+  }
+
+  /**
+   * Verify a password against a hashed password
+   * @param plainPassword - Plain text password
+   * @param hashedPassword - Hashed password from database
+   * @returns True if password matches, false otherwise
+   */
+  async verifyPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
+    return await bcrypt.compare(plainPassword, hashedPassword);
+  }
 }
 
 // Export singleton instance

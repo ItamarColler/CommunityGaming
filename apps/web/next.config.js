@@ -7,11 +7,18 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  async rewrites() {
+    return [
+      {
+        // Proxy API requests to the backend running on localhost:4001
+        source: '/api/:path*',
+        destination: 'http://localhost:4001/*',
+      },
+    ];
+  },
   webpack(config) {
     // Find the existing rule that handles SVG imports
-    const fileLoaderRule = config.module.rules.find((rule) =>
-      rule.test?.test?.('.svg')
-    );
+    const fileLoaderRule = config.module.rules.find((rule) => rule.test?.test?.('.svg'));
 
     config.module.rules.push(
       // Reapply the existing rule, but only for svg imports ending in ?url

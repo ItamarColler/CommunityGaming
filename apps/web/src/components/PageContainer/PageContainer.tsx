@@ -12,9 +12,7 @@ export default function PageContainer({ children }: PageContainerProps) {
   return (
     <div className={styles.pageWrapper}>
       <Header />
-      <main className={styles.mainContent}>
-        {children}
-      </main>
+      <main className={styles.mainContent}>{children}</main>
     </div>
   );
 }

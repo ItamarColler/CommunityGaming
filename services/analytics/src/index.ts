@@ -1,4 +1,4 @@
-import {fastify} from 'fastify';
+import { fastify } from 'fastify';
 import { createLogger } from '@community-gaming/utils';
 
 const logger = createLogger('analytics-service');

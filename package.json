@@ -12,7 +12,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev --concurrency=20",
     "dev:web": "turbo run dev --filter=@community-gaming/web",
-    "dev:api": "turbo run dev --filter=@community-gaming/api-gateway --filter=@community-gaming/ws-gateway",
+    "dev:api": "turbo run dev --filter=@community-gaming/api-gateway",
     "dev:services": "turbo run dev --filter=./services/*",
     "lint": "eslint \"apps/**/*.{ts,tsx}\" \"services/**/*.{ts,tsx}\" \"packages/**/*.{ts,tsx}\" --max-warnings=0",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",

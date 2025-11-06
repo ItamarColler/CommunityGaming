@@ -3,14 +3,17 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "module": "commonjs"
+    "module": "commonjs",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
   "ts-node": {
     "esm": false,
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "commonjs",
+      "experimentalDecorators": true
     }
   }
 }
