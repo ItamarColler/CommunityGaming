@@ -1,5 +1,5 @@
 import { type FastifyInstance } from 'fastify';
-import { getUserCountController, registerController } from '../../controllers/user.controller';
+import { getUserByIdController, getUserCountController, registerController } from '../../controllers/user.controller';
 
 /**
  * User router plugin
@@ -7,6 +7,7 @@ import { getUserCountController, registerController } from '../../controllers/us
 async function user(fastify: FastifyInstance) {
   // User routes
   fastify.get('/users/count', getUserCountController);
+  fastify.post('/user', getUserByIdController);
 
   // Auth routes
   fastify.post('/auth/register', registerController);

@@ -2,7 +2,8 @@
 
 import { useState, useEffect, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
+import { useAppSelector } from '@/lib/redux/hooks';
+import { useRegisterMutation } from '@/lib/redux';
 import { selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
 import { RegisterRequestSchema, type RegisterRequest } from '@community-gaming/types';
 import EyeOpen from '@assets/icons/eyeOpen.svg';
@@ -11,9 +12,9 @@ import styles from './register.module.css';
 
 export function RegisterForm() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectIsLoading);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const [register] = useRegisterMutation();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -53,36 +54,24 @@ export function RegisterForm() {
       return;
     }
 
-    // Call registration API
+    // Call registration API using RTK Query mutation
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-         ...formData
-        }),
-      });
+      const result = await register(formData).unwrap();
 
-      const data = await response.json();
+      if (result.success) {
+        // Show success message
+        setSuccessMessage('Account created successfully! Redirecting to login...');
 
-      if (!data.success) {
-        setServerError(data.error.message);
-        return;
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
+      } else {
+        setServerError(result.error?.message || 'Registration failed');
       }
-
-      // Show success message
-      setSuccessMessage('Account created successfully! Redirecting to login...');
-
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
     } catch (error) {
-      setServerError('An unexpected error occurred. Please try again.');
+      const err = error as { data?: { error?: { message: string; code: string } } };
+      setServerError(err.data?.error?.message || 'An unexpected error occurred. Please try again.');
     }
   };
 
