@@ -2,17 +2,19 @@
 
 import { useState, useEffect, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { signIn } from '@/features/auth/slice/authSlice';
+import { useAppSelector } from '@/lib/redux/hooks';
+import { useRegisterMutation } from '@/lib/redux';
 import { selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
 import { RegisterRequestSchema, type RegisterRequest } from '@community-gaming/types';
+import EyeOpen from '@assets/icons/eyeOpen.svg';
+import EyeClose from '@assets/icons/eyeClose.svg';
 import styles from './register.module.css';
 
 export function RegisterForm() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectIsLoading);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const [register] = useRegisterMutation();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -30,6 +32,7 @@ export function RegisterForm() {
   });
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -51,43 +54,24 @@ export function RegisterForm() {
       return;
     }
 
-    // Call registration API
+    // Call registration API using RTK Query mutation
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          displayName: formData.displayName || undefined,
-        }),
-      });
+      const result = await register(formData).unwrap();
 
-      const data = await response.json();
+      if (result.success) {
+        // Show success message
+        setSuccessMessage('Account created successfully! Redirecting to login...');
 
-      if (!data.success) {
-        setServerError(data.error.message);
-        return;
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
+      } else {
+        setServerError(result.error?.message || 'Registration failed');
       }
-
-      // After successful registration, sign in automatically (session already set by API)
-      // Just dispatch the signIn action to update Redux state
-      await dispatch(
-        signIn({
-          email: formData.email,
-          password: formData.password,
-        })
-      );
-
-      // Redirect to home
-      router.push('/');
     } catch (error) {
-      setServerError('An unexpected error occurred. Please try again.');
+      const err = error as { data?: { error?: { message: string; code: string } } };
+      setServerError(err.data?.error?.message || 'An unexpected error occurred. Please try again.');
     }
   };
 
@@ -115,6 +99,14 @@ export function RegisterForm() {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.registerForm}>
+          {/* Success message */}
+          {successMessage && (
+            <div className={styles.successBanner}>
+              <span className={styles.successIcon}>✓</span>
+              <span>{successMessage}</span>
+            </div>
+          )}
+
           {/* Global error message */}
           {serverError && (
             <div className={styles.errorBanner}>
@@ -200,7 +192,11 @@ export function RegisterForm() {
                 className={styles.togglePassword}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? '🙈' : '👁️'}
+                {showPassword ? (
+                  <EyeClose width={20} height={20} />
+                ) : (
+                  <EyeOpen width={20} height={20} />
+                )}
               </button>
             </div>
             {validationErrors.password && (
@@ -231,7 +227,11 @@ export function RegisterForm() {
                 className={styles.togglePassword}
                 aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
-                {showConfirmPassword ? '🙈' : '👁️'}
+                {showConfirmPassword ? (
+                  <EyeClose width={20} height={20} />
+                ) : (
+                  <EyeOpen width={20} height={20} />
+                )}
               </button>
             </div>
             {validationErrors.confirmPassword && (

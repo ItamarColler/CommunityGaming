@@ -1,12 +1,8 @@
 import { z } from 'zod';
+import { UserType } from '@prisma/client';
 
-// User type enumeration matching Prisma schema
-export enum UserType {
-  PLAYER = 'PLAYER',
-  CREATOR = 'CREATOR',
-  MODERATOR = 'MODERATOR',
-  ADMIN = 'ADMIN',
-}
+// Re-export UserType from Prisma for consistent imports
+export { UserType };
 
 export const UserTypeSchema = z.nativeEnum(UserType);
 
@@ -41,14 +37,6 @@ export const PublicUserSchema = UserSchema.omit({
   oauthProvider: true,
   oauthId: true,
 });
-
-// Re-export validation schemas and types
-export {
-  type CreateUserInput,
-  type UpdateUserInput,
-  CreateUserInputSchema,
-  UpdateUserInputSchema,
-} from './validation/auth';
 
 export type User = z.infer<typeof UserSchema>;
 export type PublicUser = z.infer<typeof PublicUserSchema>;

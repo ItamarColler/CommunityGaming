@@ -1,6 +1,6 @@
 import type { LoginRequest, LoginResponse, RefreshSessionResponse } from '@community-gaming/types';
 
-const API_BASE = '/api/auth';
+const API_BASE = `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4001'}/auth`;
 
 /**
  * Auth service handles client-side communication with auth API routes
