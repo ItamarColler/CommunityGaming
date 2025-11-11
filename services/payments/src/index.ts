@@ -12,7 +12,7 @@ fastify.get('/health', async () => {
 // Start server
 const start = async () => {
   try {
-    const port = process.env.PORT ? parseInt(process.env.PORT) : 4004;
+    const port = process.env.PORT ? parseInt(process.env.PORT) : 4006;
     await fastify.listen({ port, host: '0.0.0.0' });
     logger.info(`Payments service running on port ${port}`);
   } catch (err) {

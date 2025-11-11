@@ -2,6 +2,7 @@ import { configureStore, type ThunkAction, type Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { baseApi } from './api/baseApi';
 import authReducer from '@/features/auth/slice/authSlice';
+import onboardingReducer from '@/features/onboarding/slice/onboardingSlice';
 
 // Define the root reducer shape
 const rootReducer = {
@@ -10,6 +11,7 @@ const rootReducer = {
 
   // Feature reducers
   auth: authReducer,
+  onboarding: onboardingReducer,
 };
 
 // Create the makeStore function without preloadedState type to avoid circular reference

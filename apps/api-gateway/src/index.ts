@@ -3,8 +3,8 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
-import proxy from '@fastify/http-proxy';
 import { createLogger } from '@community-gaming/utils';
+import { registerProxies } from './proxies';
 
 const logger = createLogger('api-gateway');
 
@@ -26,9 +26,6 @@ fastify.get('/health', async () => {
   return { status: 'ok', service: 'api-gateway' };
 });
 
-// Identity Service URL (used when registering proxy inside start())
-const identityServiceUrl = process.env.IDENTITY_SERVICE_URL || 'http://localhost:4001';
-
 // Start server
 const start = async () => {
   try {
@@ -46,22 +43,12 @@ const start = async () => {
       timeWindow: '1 minute',
     });
 
-    // Register proxy to identity service
-    await fastify.register(proxy, {
-      upstream: identityServiceUrl,
-      prefix: '/auth',
-      rewritePrefix: '/auth',
-      http2: false,
-    });
+    // Register all service proxies
+    await registerProxies(fastify);
 
-    logger.info('Registered proxy routes:', {
-      '/auth/*': identityServiceUrl,
-    });
-
-    const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
+    const port = process.env.PORT ? parseInt(process.env.PORT) : 4001;
     await fastify.listen({ port, host: '0.0.0.0' });
     logger.info(`API Gateway running on port ${port}`);
-    logger.info(`Proxying /auth/* to ${identityServiceUrl}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

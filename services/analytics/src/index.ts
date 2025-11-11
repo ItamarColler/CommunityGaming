@@ -12,7 +12,7 @@ app.get('/health', async () => {
 // Start server
 const start = async () => {
   try {
-    const port = process.env.PORT ? parseInt(process.env.PORT) : 4007;
+    const port = process.env.PORT ? parseInt(process.env.PORT) : 4003;
     await app.listen({ port, host: '0.0.0.0' });
     logger.info(`Analytics service running on port ${port}`);
   } catch (err) {

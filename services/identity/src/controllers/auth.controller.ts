@@ -188,6 +188,9 @@ export default class AuthController {
             lastLoginAt: user.lastLoginAt,
             token: accessToken,
             refreshToken: refreshToken,
+            favoriteGames: [],
+            contentTypes: [],
+            communicationChannels: []
           },
           expiresAt,
         },
