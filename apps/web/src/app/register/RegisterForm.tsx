@@ -104,6 +104,18 @@ export function RegisterForm() {
     </InputAdornment>
   );
 
+  const confirmPasswordAdornment = (
+    <InputAdornment position="end">
+      <IconButton
+        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+        edge="end"
+        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+      >
+        {showConfirmPassword ? <EyeClose width={20} height={20} /> : <EyeOpen width={20} height={20} />}
+      </IconButton>
+    </InputAdornment>
+  );
+
   return (
     <div className={styles.registerFormContainer}>
       <div className={styles.registerCard}>
@@ -224,7 +236,7 @@ export function RegisterForm() {
               required
               slotProps={{
                 input: {
-                  endAdornment: passwordAdornment,
+                  endAdornment: confirmPasswordAdornment,
                 },
               }}
             />

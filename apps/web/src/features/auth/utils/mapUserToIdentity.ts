@@ -60,7 +60,7 @@ export function createIdentityUpdate(
   updatedUser: PublicUser,
   changedFields: (keyof PublicUser)[]
 ): Partial<CurrentUserIdentity> {
-  const update: Partial<CurrentUserIdentity> = {};
+  const update: Record<string, unknown> = {};
 
   // Only include changed fields that are part of CurrentUserIdentity
   const identityFields: (keyof CurrentUserIdentity)[] = [
@@ -76,9 +76,10 @@ export function createIdentityUpdate(
 
   for (const field of changedFields) {
     if (identityFields.includes(field as keyof CurrentUserIdentity)) {
-      (update as any)[field] = updatedUser[field];
+      const identityField = field as keyof CurrentUserIdentity;
+      update[identityField] = updatedUser[identityField];
     }
   }
 
-  return update;
+  return update as Partial<CurrentUserIdentity>;
 }

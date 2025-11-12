@@ -1,4 +1,4 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyReply } from 'fastify';
 import { Controller, POST, GET, PUT } from 'fastify-decorators';
 import { createLogger } from '@community-gaming/utils';
 import {
