@@ -14,19 +14,24 @@ export default function HomePage() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const user = useAppSelector(selectUser);
 
+  const router = useRouter();
+
+  if (isAuthenticated && user) {
+    router.push('/onboarding/profile');
+    return null;
+  }
+
   return (
     <main className={styles.main}>
       <div className={styles.header}>
         <h1 className={styles.title}>Welcome to CommunityGaming</h1>
-        <p className={styles.description}>
-          Realtime, event-driven social platform for gamers
-        </p>
+        <p className={styles.description}>Realtime, event-driven social platform for gamers</p>
       </div>
 
       {isAuthenticated && user ? (
         <div className={styles.card}>
           <h2>Hello, {user.displayName || user.username}!</h2>
-          <p className={styles.email}>{user.email}</p>
+          {/* Email removed from global state - will be fetched via RTK Query in Phase 3 */}
           <div className={styles.actions}>
             <Link href="/dashboard" className={styles.primaryButton}>
               Go to Dashboard

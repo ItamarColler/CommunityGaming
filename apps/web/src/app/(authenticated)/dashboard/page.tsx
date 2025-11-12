@@ -19,7 +19,6 @@ export default function DashboardPage() {
           <p>
             Hello, <strong>{user.displayName || user.username}</strong>!
           </p>
-          <p>Email: {user.email}</p>
         </div>
       )}
 

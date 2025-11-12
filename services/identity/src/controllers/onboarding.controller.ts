@@ -4,7 +4,6 @@ import { createLogger } from '@community-gaming/utils';
 import {
   StartOnboardingRequestSchema,
   UpdateStepRequestSchema,
-  CompleteOnboardingRequestSchema,
   StatusCode,
   type StartOnboardingResponse,
   type GetProgressResponse,
@@ -27,7 +26,7 @@ export default class OnboardingController {
   async startOnboarding(request: AuthenticatedRequest, reply: FastifyReply) {
     try {
       // Get user ID from authenticated request
-      const userId = request.user?.userId;
+      const userId = request.auth?.id;
 
       if (!userId) {
         return reply.status(StatusCode.UNAUTHORIZED).send({
@@ -103,7 +102,7 @@ export default class OnboardingController {
   @GET('/progress')
   async getProgress(request: AuthenticatedRequest, reply: FastifyReply) {
     try {
-      const userId = request.user?.userId;
+      const userId = request.auth?.id;
 
       if (!userId) {
         return reply.status(StatusCode.UNAUTHORIZED).send({
@@ -130,6 +129,7 @@ export default class OnboardingController {
       return reply.status(StatusCode.OK).send({
         success: true,
         data: {
+          userId: progress.userId,
           progressId: progress.id,
           selectedRole: progress.selectedRole,
           currentStep: progress.currentStep,
@@ -161,7 +161,7 @@ export default class OnboardingController {
   @PUT('/step')
   async updateStep(request: AuthenticatedRequest, reply: FastifyReply) {
     try {
-      const userId = request.user?.userId;
+      const userId = request.auth?.id;
 
       if (!userId) {
         return reply.status(StatusCode.UNAUTHORIZED).send({
@@ -246,7 +246,7 @@ export default class OnboardingController {
   @POST('/complete')
   async completeOnboarding(request: AuthenticatedRequest, reply: FastifyReply) {
     try {
-      const userId = request.user?.userId;
+      const userId = request.auth?.id;
 
       if (!userId) {
         return reply.status(StatusCode.UNAUTHORIZED).send({
@@ -306,7 +306,7 @@ export default class OnboardingController {
   @GET('/match-preview')
   async getMatchPreview(request: AuthenticatedRequest, reply: FastifyReply) {
     try {
-      const userId = request.user?.userId;
+      const userId = request.auth?.id;
 
       if (!userId) {
         return reply.status(StatusCode.UNAUTHORIZED).send({
@@ -343,7 +343,7 @@ export default class OnboardingController {
   @POST('/skip')
   async skipOnboarding(request: AuthenticatedRequest, reply: FastifyReply) {
     try {
-      const userId = request.user?.userId;
+      const userId = request.auth?.id;
 
       if (!userId) {
         return reply.status(StatusCode.UNAUTHORIZED).send({

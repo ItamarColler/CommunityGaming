@@ -1,7 +1,9 @@
 import { prisma } from '../db/prisma.client';
+import { Prisma } from '@prisma/client';
 import type {
   OnboardingRole,
   OnboardingStep,
+  OnboardingProgressData,
   ProfileSetup,
   GamerIntent,
   LeaderIntent,
@@ -15,23 +17,6 @@ import type {
 type IntentData = GamerIntent | LeaderIntent | SponsorIntent;
 type GoalsData = GamerGoals | LeaderGoals | SponsorGoals;
 
-interface OnboardingProgressData {
-  id: string;
-  userId: string;
-  selectedRole: string;
-  currentStep: string;
-  completedSteps: string[];
-  profileData: Record<string, unknown> | null;
-  intentData: Record<string, unknown> | null;
-  goalsData: Record<string, unknown> | null;
-  preferencesData: Record<string, unknown> | null;
-  completionScore: number;
-  isCompleted: boolean;
-  startedAt: Date;
-  completedAt: Date | null;
-  lastStepAt: Date;
-}
-
 /**
  * Onboarding Service
  * Handles all onboarding-related business logic
@@ -43,10 +28,7 @@ class OnboardingService {
    * @param role - Selected role
    * @returns Created onboarding progress
    */
-  async startOnboarding(
-    userId: string,
-    role: OnboardingRole
-  ): Promise<OnboardingProgressData> {
+  async startOnboarding(userId: string, role: OnboardingRole): Promise<OnboardingProgressData> {
     // Check if user already has onboarding progress
     const existingProgress = await prisma.onboardingProgress.findUnique({
       where: { userId },
@@ -117,7 +99,7 @@ class OnboardingService {
     const progress = await prisma.onboardingProgress.update({
       where: { userId },
       data: {
-        profileData: data as Record<string, unknown>,
+        profileData: data as Prisma.InputJsonValue,
         completionScore: 20,
         lastStepAt: new Date(),
       },
@@ -142,14 +124,11 @@ class OnboardingService {
    * @param data - Intent data
    * @returns Updated progress
    */
-  async saveIntentData(
-    userId: string,
-    data: Partial<IntentData>
-  ): Promise<OnboardingProgressData> {
+  async saveIntentData(userId: string, data: Partial<IntentData>): Promise<OnboardingProgressData> {
     const progress = await prisma.onboardingProgress.update({
       where: { userId },
       data: {
-        intentData: data as Record<string, unknown>,
+        intentData: data as Prisma.InputJsonValue,
         completionScore: 40,
         lastStepAt: new Date(),
       },
@@ -174,14 +153,11 @@ class OnboardingService {
    * @param data - Goals data
    * @returns Updated progress
    */
-  async saveGoalsData(
-    userId: string,
-    data: Partial<GoalsData>
-  ): Promise<OnboardingProgressData> {
+  async saveGoalsData(userId: string, data: Partial<GoalsData>): Promise<OnboardingProgressData> {
     const progress = await prisma.onboardingProgress.update({
       where: { userId },
       data: {
-        goalsData: data as Record<string, unknown>,
+        goalsData: data as Prisma.InputJsonValue,
         completionScore: 60,
         lastStepAt: new Date(),
       },
@@ -213,7 +189,7 @@ class OnboardingService {
     const progress = await prisma.onboardingProgress.update({
       where: { userId },
       data: {
-        preferencesData: data as Record<string, unknown>,
+        preferencesData: data as Prisma.InputJsonValue,
         completionScore: 80,
         lastStepAt: new Date(),
       },
@@ -255,22 +231,34 @@ class OnboardingService {
     const missingFields: string[] = [];
     let completionScore = 100;
 
-    if (!progress.profileData || Object.keys(progress.profileData as Record<string, unknown>).length === 0) {
+    if (
+      !progress.profileData ||
+      Object.keys(progress.profileData as Record<string, unknown>).length === 0
+    ) {
       missingFields.push('profile');
       completionScore -= 20;
     }
 
-    if (!progress.intentData || Object.keys(progress.intentData as Record<string, unknown>).length === 0) {
+    if (
+      !progress.intentData ||
+      Object.keys(progress.intentData as Record<string, unknown>).length === 0
+    ) {
       missingFields.push('intent');
       completionScore -= 20;
     }
 
-    if (!progress.goalsData || Object.keys(progress.goalsData as Record<string, unknown>).length === 0) {
+    if (
+      !progress.goalsData ||
+      Object.keys(progress.goalsData as Record<string, unknown>).length === 0
+    ) {
       missingFields.push('goals');
       completionScore -= 20;
     }
 
-    if (!progress.preferencesData || Object.keys(progress.preferencesData as Record<string, unknown>).length === 0) {
+    if (
+      !progress.preferencesData ||
+      Object.keys(progress.preferencesData as Record<string, unknown>).length === 0
+    ) {
       missingFields.push('preferences');
       completionScore -= 20;
     }

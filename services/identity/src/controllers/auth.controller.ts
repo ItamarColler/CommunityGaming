@@ -190,7 +190,7 @@ export default class AuthController {
             refreshToken: refreshToken,
             favoriteGames: [],
             contentTypes: [],
-            communicationChannels: []
+            communicationChannels: [],
           },
           expiresAt,
         },

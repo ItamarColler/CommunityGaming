@@ -1,13 +1,32 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../services';
 import { PublicUser, type LoginRequest } from '@community-gaming/types';
+import { CurrentUserIdentity, isCurrentUserIdentity } from '../types/identity';
+import { mapUserToIdentity } from '../utils/mapUserToIdentity';
 
-// Web-specific Auth state (extends shared types for Redux)
+/**
+ * Auth state for global Redux store
+ *
+ * Separated concerns:
+ * - Authentication status & session metadata
+ * - Minimal user identity (9-10 fields only)
+ *
+ * Full user profile data should be fetched via RTK Query on-demand
+ */
 export interface AuthState {
-  user: PublicUser | null;
+  /** Minimal user identity - Only fields needed for auth, routing, and cross-cutting UI */
+  currentUser: CurrentUserIdentity | null;
+
+  /** Authentication status */
   isAuthenticated: boolean;
+
+  /** Loading state for async operations */
   isLoading: boolean;
+
+  /** Error message */
   error: string | null;
+
+  /** Session expiration timestamp */
   sessionExpiresAt: string | null;
 }
 
@@ -17,6 +36,10 @@ const AUTH_USER_KEY = 'auth_user';
 const AUTH_EXPIRES_KEY = 'auth_expires';
 
 // LocalStorage helpers (client-side only)
+/**
+ * Load auth state from localStorage
+ * Only stores CurrentUserIdentity (9-10 fields), not full PublicUser
+ */
 const loadAuthFromStorage = (): Partial<AuthState> => {
   // Only run in browser
   if (typeof window === 'undefined') return {};
@@ -36,10 +59,28 @@ const loadAuthFromStorage = (): Partial<AuthState> => {
       return {};
     }
 
-    const user = JSON.parse(userStr);
+    const parsedUser = JSON.parse(userStr);
+
+    // Validate that it's a CurrentUserIdentity
+    // Handle migration from old PublicUser format
+    let currentUser: CurrentUserIdentity;
+
+    if (isCurrentUserIdentity(parsedUser)) {
+      currentUser = parsedUser;
+    } else if (parsedUser && typeof parsedUser === 'object' && 'id' in parsedUser) {
+      // Migrate from old PublicUser format to CurrentUserIdentity
+      console.warn('Migrating localStorage from PublicUser to CurrentUserIdentity');
+      currentUser = mapUserToIdentity(parsedUser as PublicUser);
+      // Save migrated format
+      saveAuthToStorage(currentUser, expiresAt);
+    } else {
+      // Invalid data, clear storage
+      clearAuthFromStorage();
+      return {};
+    }
 
     return {
-      user,
+      currentUser,
       isAuthenticated: true,
       sessionExpiresAt: expiresAt,
     };
@@ -50,11 +91,15 @@ const loadAuthFromStorage = (): Partial<AuthState> => {
   }
 };
 
-const saveAuthToStorage = (user: PublicUser, expiresAt: string, token?: string) => {
+/**
+ * Save auth state to localStorage
+ * Only stores CurrentUserIdentity (9-10 fields), not full PublicUser
+ */
+const saveAuthToStorage = (currentUser: CurrentUserIdentity, expiresAt: string, token?: string) => {
   if (typeof window === 'undefined') return;
 
   try {
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(currentUser));
     localStorage.setItem(AUTH_EXPIRES_KEY, expiresAt);
     if (token) {
       localStorage.setItem(AUTH_TOKEN_KEY, token);
@@ -85,7 +130,7 @@ export const getAuthToken = (): string | null => {
 // Initial state - load from localStorage if available
 const storedAuth = loadAuthFromStorage();
 const initialState: AuthState = {
-  user: storedAuth.user || null,
+  currentUser: storedAuth.currentUser || null,
   isAuthenticated: storedAuth.isAuthenticated || false,
   isLoading: false,
   error: null,
@@ -171,12 +216,58 @@ const authSlice = createSlice({
     },
 
     /**
-     * Set user from server-side preload
+     * Set current user identity
+     * Accepts either CurrentUserIdentity or PublicUser (backward compatibility)
      * Used during SSR hydration
      */
+    setCurrentUser: (state, action: PayloadAction<CurrentUserIdentity | PublicUser | null>) => {
+      if (!action.payload) {
+        state.currentUser = null;
+        state.isAuthenticated = false;
+      } else {
+        // Check if it's already CurrentUserIdentity or needs mapping from PublicUser
+        if (isCurrentUserIdentity(action.payload)) {
+          state.currentUser = action.payload;
+        } else {
+          // Map from PublicUser to CurrentUserIdentity
+          state.currentUser = mapUserToIdentity(action.payload as PublicUser);
+        }
+        state.isAuthenticated = true;
+      }
+    },
+
+    /**
+     * Update specific identity fields
+     * Used when profile mutations change identity fields (displayName, avatar, etc.)
+     * Allows partial updates without replacing entire identity
+     */
+    updateCurrentUserIdentity: (state, action: PayloadAction<Partial<CurrentUserIdentity>>) => {
+      if (state.currentUser) {
+        state.currentUser = {
+          ...state.currentUser,
+          ...action.payload,
+        };
+
+        // Update localStorage with new identity
+        if (state.sessionExpiresAt) {
+          saveAuthToStorage(state.currentUser, state.sessionExpiresAt);
+        }
+      }
+    },
+
+    /**
+     * @deprecated Use setCurrentUser instead
+     * Kept for backward compatibility during migration
+     */
     setUser: (state, action: PayloadAction<PublicUser | null>) => {
-      state.user = action.payload;
-      state.isAuthenticated = !!action.payload;
+      console.warn('setUser is deprecated. Use setCurrentUser instead.');
+      if (!action.payload) {
+        state.currentUser = null;
+        state.isAuthenticated = false;
+      } else {
+        state.currentUser = mapUserToIdentity(action.payload);
+        state.isAuthenticated = true;
+      }
     },
 
     /**
@@ -184,7 +275,7 @@ const authSlice = createSlice({
      * Actual logout happens via async thunk
      */
     optimisticLogout: (state) => {
-      state.user = null;
+      state.currentUser = null;
       state.isAuthenticated = false;
       state.sessionExpiresAt = null;
 
@@ -205,12 +296,15 @@ const authSlice = createSlice({
       state.isLoading = false;
 
       if (action.payload) {
-        state.user = action.payload.user;
+        // Map PublicUser from API to CurrentUserIdentity for global state
+        const currentUser = mapUserToIdentity(action.payload.user);
+
+        state.currentUser = currentUser;
         state.isAuthenticated = true;
         state.sessionExpiresAt = action.payload.expiresAt;
 
-        // Save to localStorage
-        saveAuthToStorage(action.payload.user, action.payload.expiresAt);
+        // Save to localStorage (only minimal identity, not full PublicUser)
+        saveAuthToStorage(currentUser, action.payload.expiresAt);
       }
 
       state.error = null;
@@ -243,7 +337,7 @@ const authSlice = createSlice({
     // When refresh fails - clear everything
     builder.addCase(refreshSession.rejected, (state, action) => {
       state.isLoading = false;
-      state.user = null;
+      state.currentUser = null;
       state.isAuthenticated = false;
       state.sessionExpiresAt = null;
       state.error = (action.payload as string) || 'Session expired';
@@ -261,7 +355,7 @@ const authSlice = createSlice({
     // When sign out succeeds - clear all user data
     builder.addCase(signOut.fulfilled, (state) => {
       state.isLoading = false;
-      state.user = null;
+      state.currentUser = null;
       state.isAuthenticated = false;
       state.sessionExpiresAt = null;
       state.error = null;
@@ -273,7 +367,7 @@ const authSlice = createSlice({
     // When sign out fails - still clear everything for safety
     builder.addCase(signOut.rejected, (state) => {
       state.isLoading = false;
-      state.user = null;
+      state.currentUser = null;
       state.isAuthenticated = false;
       state.sessionExpiresAt = null;
 
@@ -283,5 +377,17 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError, setUser, optimisticLogout } = authSlice.actions;
+// Export actions
+export const {
+  clearError,
+  setCurrentUser,
+  updateCurrentUserIdentity,
+  setUser, // @deprecated - kept for backward compatibility
+  optimisticLogout,
+} = authSlice.actions;
+
+// Export reducer
 export default authSlice.reducer;
+
+// Re-export types for convenience
+export type { CurrentUserIdentity } from '../types/identity';

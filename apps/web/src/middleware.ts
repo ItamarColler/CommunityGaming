@@ -13,8 +13,8 @@ export function middleware(request: NextRequest) {
   const isAuthenticated = !!token;
 
   // Check if current route is public
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
-  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
+  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
+  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
   // If user is authenticated and trying to access auth routes (login/register),
   // redirect to dashboard

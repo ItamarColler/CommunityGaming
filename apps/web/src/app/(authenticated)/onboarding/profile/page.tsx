@@ -80,7 +80,7 @@ export default function ProfileSetupPage() {
     country: profileData.country || '',
     timezone: profileData.timezone || 'UTC+00:00',
     favoriteGames: profileData.favoriteGames || [],
-    playStyle: profileData.playStyle || 'casual',
+    playStyle: profileData.playStyle,
   });
 
   const [customGame, setCustomGame] = useState('');
@@ -301,7 +301,9 @@ export default function ProfileSetupPage() {
               </button>
             </div>
             {errors.customGame && <span className={styles.errorText}>{errors.customGame}</span>}
-            {errors.favoriteGames && <span className={styles.errorText}>{errors.favoriteGames}</span>}
+            {errors.favoriteGames && (
+              <span className={styles.errorText}>{errors.favoriteGames}</span>
+            )}
 
             {/* Selected Games */}
             {formData.favoriteGames && formData.favoriteGames.length > 0 && (

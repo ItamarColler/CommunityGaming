@@ -23,7 +23,14 @@ const STEP_LABELS: Record<OnboardingStep, string> = {
   complete: 'Complete',
 };
 
-const STEP_ORDER: OnboardingStep[] = ['welcome', 'profile', 'intent', 'goals', 'preferences', 'complete'];
+const STEP_ORDER: OnboardingStep[] = [
+  'welcome',
+  'profile',
+  'intent',
+  'goals',
+  'preferences',
+  'complete',
+];
 
 export function OnboardingLayout({ children }: OnboardingLayoutProps) {
   const currentStep = useAppSelector(selectCurrentStep);
@@ -52,10 +59,7 @@ export function OnboardingLayout({ children }: OnboardingLayoutProps) {
             <span className={styles.progressPercent}>{completionScore}%</span>
           </div>
           <div className={styles.progressBar}>
-            <div
-              className={styles.progressFill}
-              style={{ width: `${completionScore}%` }}
-            />
+            <div className={styles.progressFill} style={{ width: `${completionScore}%` }} />
           </div>
         </div>
 
@@ -73,9 +77,7 @@ export function OnboardingLayout({ children }: OnboardingLayoutProps) {
                   isCompleted ? styles.stepCompleted : ''
                 }`}
               >
-                <div className={styles.stepCircle}>
-                  {isCompleted ? '✓' : index + 1}
-                </div>
+                <div className={styles.stepCircle}>{isCompleted ? '✓' : index + 1}</div>
                 <div className={styles.stepLabel}>{STEP_LABELS[step]}</div>
               </div>
             );
@@ -89,7 +91,10 @@ export function OnboardingLayout({ children }: OnboardingLayoutProps) {
       {/* Footer */}
       <footer className={styles.footer}>
         <p className={styles.footerText}>
-          Need help? <a href="/support" className={styles.footerLink}>Contact Support</a>
+          Need help?{' '}
+          <a href="/support" className={styles.footerLink}>
+            Contact Support
+          </a>
         </p>
       </footer>
     </div>

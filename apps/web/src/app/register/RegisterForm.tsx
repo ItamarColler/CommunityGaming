@@ -6,6 +6,8 @@ import { useAppSelector } from '@/lib/redux/hooks';
 import { useRegisterMutation } from '@/lib/redux';
 import { selectIsLoading, selectIsAuthenticated } from '@/features/auth/selectors';
 import { RegisterRequestSchema, type RegisterRequest } from '@community-gaming/types';
+import { Input } from '@/components';
+import { InputAdornment, IconButton } from '@mui/material';
 import EyeOpen from '@assets/icons/eyeOpen.svg';
 import EyeClose from '@assets/icons/eyeClose.svg';
 import styles from './register.module.css';
@@ -90,6 +92,18 @@ export function RegisterForm() {
     }
   };
 
+  const passwordAdornment = (
+    <InputAdornment position="end">
+      <IconButton
+        onClick={() => setShowPassword(!showPassword)}
+        edge="end"
+        aria-label={showPassword ? 'Hide password' : 'Show password'}
+      >
+        {showPassword ? <EyeClose width={20} height={20} /> : <EyeOpen width={20} height={20} />}
+      </IconButton>
+    </InputAdornment>
+  );
+
   return (
     <div className={styles.registerFormContainer}>
       <div className={styles.registerCard}>
@@ -117,126 +131,103 @@ export function RegisterForm() {
 
           {/* Username field */}
           <div className={styles.formField}>
-            <label htmlFor="username">Username *</label>
-            <input
+            <Input
               id="username"
-              type="text"
+              inputType="text"
+              label="Username"
               value={formData.username}
-              onChange={(e) => handleInputChange('username', e.target.value)}
+              setParentValue={(value) => handleInputChange('username', String(value))}
               placeholder="johndoe"
               disabled={isLoading}
-              className={validationErrors.username ? 'error' : ''}
+              error={!!validationErrors.username}
+              helperText={
+                validationErrors.username ||
+                '3-30 characters, letters, numbers, underscores, and hyphens only'
+              }
               autoComplete="username"
+              required
             />
-            {validationErrors.username && (
-              <span className={styles.fieldError}>{validationErrors.username}</span>
-            )}
-            <p className={styles.fieldHint}>
-              3-30 characters, letters, numbers, underscores, and hyphens only
-            </p>
           </div>
 
           {/* Display Name field */}
           <div className={styles.formField}>
-            <label htmlFor="displayName">Display Name</label>
-            <input
+            <Input
               id="displayName"
-              type="text"
+              inputType="text"
+              label="Display Name"
               value={formData.displayName}
-              onChange={(e) => handleInputChange('displayName', e.target.value)}
+              setParentValue={(value) => handleInputChange('displayName', String(value))}
               placeholder="John Doe (optional)"
               disabled={isLoading}
-              className={validationErrors.displayName ? 'error' : ''}
+              error={!!validationErrors.displayName}
+              helperText={validationErrors.displayName}
               autoComplete="name"
+              required={false}
             />
-            {validationErrors.displayName && (
-              <span className={styles.fieldError}>{validationErrors.displayName}</span>
-            )}
           </div>
 
           {/* Email field */}
           <div className={styles.formField}>
-            <label htmlFor="email">Email *</label>
-            <input
+            <Input
               id="email"
-              type="email"
+              inputType="email"
+              label="Email"
               value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              setParentValue={(value) => handleInputChange('email', String(value))}
               placeholder="you@example.com"
               disabled={isLoading}
-              className={validationErrors.email ? 'error' : ''}
+              error={!!validationErrors.email}
+              helperText={validationErrors.email}
               autoComplete="email"
+              required
             />
-            {validationErrors.email && (
-              <span className={styles.fieldError}>{validationErrors.email}</span>
-            )}
           </div>
 
           {/* Password field */}
           <div className={styles.formField}>
-            <label htmlFor="password">Password *</label>
-            <div className={styles.passwordInputWrapper}>
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                value={formData.password}
-                onChange={(e) => handleInputChange('password', e.target.value)}
-                placeholder="Enter your password"
-                disabled={isLoading}
-                className={validationErrors.password ? 'error' : ''}
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className={styles.togglePassword}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? (
-                  <EyeClose width={20} height={20} />
-                ) : (
-                  <EyeOpen width={20} height={20} />
-                )}
-              </button>
-            </div>
-            {validationErrors.password && (
-              <span className={styles.fieldError}>{validationErrors.password}</span>
-            )}
-            <p className={styles.fieldHint}>
-              Minimum 8 characters with uppercase, lowercase, number, and special character
-            </p>
+            <Input
+              id="password"
+              inputType={showPassword ? 'text' : 'password'}
+              label="Password"
+              value={formData.password}
+              setParentValue={(value) => handleInputChange('password', String(value))}
+              placeholder="Enter your password"
+              disabled={isLoading}
+              error={!!validationErrors.password}
+              helperText={
+                validationErrors.password ||
+                'Minimum 8 characters with uppercase, lowercase, number, and special character'
+              }
+              autoComplete="new-password"
+              required
+              slotProps={{
+                input: {
+                  endAdornment: passwordAdornment,
+                },
+              }}
+            />
           </div>
 
           {/* Confirm Password field */}
           <div className={styles.formField}>
-            <label htmlFor="confirmPassword">Confirm Password *</label>
-            <div className={styles.passwordInputWrapper}>
-              <input
-                id="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                value={formData.confirmPassword}
-                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                placeholder="Confirm your password"
-                disabled={isLoading}
-                className={validationErrors.confirmPassword ? 'error' : ''}
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className={styles.togglePassword}
-                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-              >
-                {showConfirmPassword ? (
-                  <EyeClose width={20} height={20} />
-                ) : (
-                  <EyeOpen width={20} height={20} />
-                )}
-              </button>
-            </div>
-            {validationErrors.confirmPassword && (
-              <span className={styles.fieldError}>{validationErrors.confirmPassword}</span>
-            )}
+            <Input
+              id="confirmPassword"
+              inputType={showConfirmPassword ? 'text' : 'password'}
+              label="Confirm Password"
+              value={formData.confirmPassword}
+              setParentValue={(value) => handleInputChange('confirmPassword', String(value))}
+              placeholder="Confirm your password"
+              disabled={isLoading}
+              error={!!validationErrors.confirmPassword}
+              helperText={validationErrors.confirmPassword}
+              autoComplete="new-password"
+              required
+              slotProps={{
+                input: {
+                  endAdornment: passwordAdornment,
+                },
+              }}
+            />
           </div>
 
           {/* Submit button */}

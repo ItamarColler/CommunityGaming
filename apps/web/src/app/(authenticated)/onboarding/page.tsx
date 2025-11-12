@@ -108,7 +108,8 @@ export default function OnboardingWelcomePage() {
         <div className={styles.hero}>
           <h1 className={styles.heroTitle}>Welcome to CommunityGaming</h1>
           <p className={styles.heroTagline}>
-            The realtime social platform for gamers. Find your people, build communities, and level up together.
+            The realtime social platform for gamers. Find your people, build communities, and level
+            up together.
           </p>
         </div>
 
@@ -144,9 +145,7 @@ export default function OnboardingWelcomePage() {
                   ))}
                 </ul>
 
-                {selectedRole === card.role && (
-                  <div className={styles.selectedBadge}>Selected</div>
-                )}
+                {selectedRole === card.role && <div className={styles.selectedBadge}>Selected</div>}
               </button>
             ))}
           </div>

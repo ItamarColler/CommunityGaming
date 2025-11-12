@@ -5,6 +5,7 @@
 **Goal**: Create a role-aware, progressive onboarding system that achieves 80%+ completion rate while collecting high-quality data for matchmaking, recommendations, and monetization.
 
 **Success Metrics**:
+
 - Completion rate: ≥80%
 - Profile completeness: ≥85%
 - Time to first action (join community/mission): <24 hours
@@ -122,7 +123,7 @@ const COMPLETION_WEIGHTS = {
   avatar: 10,
   country: 5,
   timezone: 5,
-  favoriteGames: 10,  // At least 1 game
+  favoriteGames: 10, // At least 1 game
   playStyle: 5,
 
   // Role-specific fields (60 points)
@@ -139,13 +140,13 @@ const COMPLETION_WEIGHTS = {
     genreFocus: 10,
     memberSizeGoal: 10,
     missionIntent: 10,
-    platforms: 10,  // At least 1 platform
+    platforms: 10, // At least 1 platform
     incentiveSystem: 5,
   },
   sponsor: {
     brandName: 15,
     category: 10,
-    targetAudience: 15,  // At least 1 genre
+    targetAudience: 15, // At least 1 genre
     objective: 10,
     budgetRange: 5,
     preferredPartnerTypes: 5,
@@ -162,6 +163,7 @@ const COMPLETION_WEIGHTS = {
 **Route**: `/onboarding`
 
 **UI Components**:
+
 - Hero section with platform tagline
 - 3 role cards with benefits:
   - **Gamer**: "Find your squad, track progress, earn rewards"
@@ -170,6 +172,7 @@ const COMPLETION_WEIGHTS = {
 - Preview of what each role unlocks
 
 **Actions**:
+
 ```typescript
 // User selects role
 POST /api/onboarding/start
@@ -178,6 +181,7 @@ Response: { progressId, nextStep: "profile" }
 ```
 
 **State**:
+
 ```typescript
 {
   selectedRole: "gamer",
@@ -194,6 +198,7 @@ Response: { progressId, nextStep: "profile" }
 **Route**: `/onboarding/profile`
 
 **Fields**:
+
 ```typescript
 {
   displayName: string;        // Required
@@ -206,12 +211,14 @@ Response: { progressId, nextStep: "profile" }
 ```
 
 **UI Features**:
+
 - Avatar upload with preview
 - Game search autocomplete (popular games suggested)
 - Timezone auto-detection with override
 - Progress bar: "20% complete"
 
 **Validation**:
+
 ```typescript
 const ProfileSetupSchema = z.object({
   displayName: z.string().min(3).max(50),
@@ -224,6 +231,7 @@ const ProfileSetupSchema = z.object({
 ```
 
 **Actions**:
+
 ```typescript
 PATCH /api/onboarding/progress/:id
 Body: { step: "profile", data: ProfileSetupSchema }
@@ -239,6 +247,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 #### 2A. Gamer Intent
 
 **Fields**:
+
 ```typescript
 {
   primaryGoal: "skill" | "rank" | "social" | "recognition";
@@ -248,6 +257,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 ```
 
 **UI**:
+
 - Radio cards with icons for primary goal
 - Text area for short-term goal (e.g., "Reach Diamond this season")
 - Long-term vision selector
@@ -255,6 +265,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 #### 2B. Leader Intent
 
 **Fields**:
+
 ```typescript
 {
   communityName: string;
@@ -266,6 +277,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 ```
 
 **UI**:
+
 - Community name input with availability check
 - Genre selector (from favoriteGames or custom)
 - Mission intent cards
@@ -274,6 +286,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 #### 2C. Sponsor Intent
 
 **Fields**:
+
 ```typescript
 {
   brandName: string;
@@ -284,6 +297,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 ```
 
 **UI**:
+
 - Brand name input
 - Category selector
 - Target audience multi-select (genres from platform taxonomy)
@@ -300,6 +314,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 #### 3A. Gamer Goals
 
 **Fields**:
+
 ```typescript
 {
   weeklyCommitment: number;     // Hours per week (0-168)
@@ -311,6 +326,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 ```
 
 **UI**:
+
 - Slider for weekly hours
 - Motivation cards (XP bar, trophy, gift box icons)
 - Rank input (free text or dropdown by game)
@@ -320,6 +336,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 #### 3B. Leader Goals
 
 **Fields**:
+
 ```typescript
 {
   incentiveSystem: IncentiveSystem; // TOKENS, BADGES, XP
@@ -332,6 +349,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 ```
 
 **UI**:
+
 - Incentive system selector
 - Metrics checkboxes
 - Platform connections:
@@ -344,6 +362,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 #### 3C. Sponsor Goals
 
 **Fields**:
+
 ```typescript
 {
   budgetRange?: number;         // Monthly budget in cents
@@ -353,6 +372,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 ```
 
 **UI**:
+
 - Budget slider (optional, ranges: <$500, $500-$2k, $2k-$10k, >$10k)
 - Partner type multi-select
 - Conversion metric checkboxes
@@ -366,6 +386,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 **Route**: `/onboarding/[role]/preferences`
 
 **Fields**:
+
 ```typescript
 {
   contentTypes: ContentType[];           // TOURNAMENTS, STREAMS, TIPS, PRODUCTS
@@ -375,6 +396,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 ```
 
 **UI**:
+
 - Content type multi-select with descriptions
 - Communication channel preferences
 - Notification frequency radio buttons
@@ -388,6 +410,7 @@ Response: { completionScore: 35, nextStep: "intent" }
 **Route**: `/onboarding/complete`
 
 **UI Elements**:
+
 - Success animation (confetti, checkmark)
 - Profile completeness card: "95% complete"
 - Missing fields prompt (if any): "Add your avatar for 5 more points"
@@ -397,28 +420,18 @@ Response: { completionScore: 35, nextStep: "intent" }
   - **Sponsors**: "23 communities seeking sponsorship"
 
 **Next Actions (CTAs)**:
+
 ```typescript
 // Role-specific suggestions
-gamer: [
-  "Join your first community",
-  "Start a daily mission",
-  "Find a mentor"
-]
+gamer: ['Join your first community', 'Start a daily mission', 'Find a mentor'];
 
-leader: [
-  "Invite your first members",
-  "Create a community event",
-  "Apply for sponsorship"
-]
+leader: ['Invite your first members', 'Create a community event', 'Apply for sponsorship'];
 
-sponsor: [
-  "Browse matching communities",
-  "Create your first campaign",
-  "View analytics dashboard"
-]
+sponsor: ['Browse matching communities', 'Create your first campaign', 'View analytics dashboard'];
 ```
 
 **Actions**:
+
 ```typescript
 POST /api/onboarding/complete/:id
 Response: {
@@ -515,7 +528,7 @@ Response: { count: number, samples: Sponsor[] }
 // features/onboarding/slice/onboardingSlice.ts
 interface OnboardingState {
   progressId: string | null;
-  selectedRole: "gamer" | "leader" | "sponsor" | null;
+  selectedRole: 'gamer' | 'leader' | 'sponsor' | null;
   currentStep: string;
   completedSteps: string[];
   completionScore: number;
@@ -545,14 +558,14 @@ const onboardingSlice = createSlice({
   reducers: {
     startOnboarding(state, action: PayloadAction<{ role: string }>) {
       state.selectedRole = action.payload.role;
-      state.currentStep = "profile";
-      state.completedSteps = ["welcome"];
+      state.currentStep = 'profile';
+      state.completedSteps = ['welcome'];
     },
 
-    completeStep(state, action: PayloadAction<{ step: string, data: any }>) {
+    completeStep(state, action: PayloadAction<{ step: string; data: any }>) {
       state.completedSteps.push(action.payload.step);
       // Store step data
-      if (action.payload.step === "profile") {
+      if (action.payload.step === 'profile') {
         state.profileData = action.payload.data;
       }
       // ... similar for other steps
@@ -661,7 +674,9 @@ export class MatchingPreviewService {
     });
 
     const count = await prisma.leaderProfile.count({
-      where: { /* same filters */ },
+      where: {
+        /* same filters */
+      },
     });
 
     return { count, samples: communities };
@@ -688,7 +703,9 @@ export class MatchingPreviewService {
     });
 
     const count = await prisma.user.count({
-      where: { /* same filters */ },
+      where: {
+        /* same filters */
+      },
     });
 
     return { count, samples: gamers };
@@ -713,7 +730,9 @@ export class MatchingPreviewService {
     });
 
     const count = await prisma.sponsorProfile.count({
-      where: { /* same filters */ },
+      where: {
+        /* same filters */
+      },
     });
 
     return { count, samples: sponsors };
@@ -731,20 +750,20 @@ export class MatchingPreviewService {
 // Unlock features based on completion score
 const COMPLETION_MILESTONES = {
   25: {
-    reward: "Basic recommendations enabled",
-    features: ["browse_communities"],
+    reward: 'Basic recommendations enabled',
+    features: ['browse_communities'],
   },
   50: {
-    reward: "Profile visible in search",
-    features: ["appear_in_discovery", "send_invites"],
+    reward: 'Profile visible in search',
+    features: ['appear_in_discovery', 'send_invites'],
   },
   75: {
-    reward: "Personalized missions unlocked",
-    features: ["missions", "matchmaking"],
+    reward: 'Personalized missions unlocked',
+    features: ['missions', 'matchmaking'],
   },
   90: {
-    reward: "Full platform access + 100 XP",
-    features: ["all"],
+    reward: 'Full platform access + 100 XP',
+    features: ['all'],
     xpReward: 100,
   },
 };
@@ -862,27 +881,32 @@ profile_updated_after_onboarding { fieldsUpdated: string[] }
 ## 13. Implementation Timeline
 
 ### Phase 1 (Week 1-2): Foundation
+
 - Database schema updates (OnboardingProgress)
 - API endpoints (start, save, complete)
 - Basic Redux state management
 
 ### Phase 2 (Week 3-4): Core Flow
+
 - Welcome + role selection
 - Shared profile setup
 - Role-specific intent forms
 
 ### Phase 3 (Week 5-6): Advanced Features
+
 - Growth goals forms
 - Discovery preferences
 - Match preview integration
 
 ### Phase 4 (Week 7-8): Polish
+
 - Completion summary
 - Gamification (milestones, XP)
 - Analytics integration
 - Performance optimization
 
 ### Phase 5 (Week 9-10): Testing & Launch
+
 - E2E tests
 - A/B test setup
 - Soft launch + monitoring

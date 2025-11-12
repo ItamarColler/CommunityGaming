@@ -25,7 +25,13 @@ export type OnboardingRole = 'gamer' | 'leader' | 'sponsor';
 
 export const OnboardingRoleSchema = z.enum(['gamer', 'leader', 'sponsor']);
 
-export type OnboardingStep = 'welcome' | 'profile' | 'intent' | 'goals' | 'preferences' | 'complete';
+export type OnboardingStep =
+  | 'welcome'
+  | 'profile'
+  | 'intent'
+  | 'goals'
+  | 'preferences'
+  | 'complete';
 
 export const OnboardingStepSchema = z.enum([
   'welcome',
@@ -35,6 +41,24 @@ export const OnboardingStepSchema = z.enum([
   'preferences',
   'complete',
 ]);
+
+// Onboarding Progress Data (for service layer)
+export interface OnboardingProgressData {
+  id: string;
+  userId: string;
+  selectedRole: OnboardingRole;
+  currentStep: OnboardingStep;
+  completedSteps: OnboardingStep[];
+  profileData: Record<string, unknown> | null;
+  intentData: Record<string, unknown> | null;
+  goalsData: Record<string, unknown> | null;
+  preferencesData: Record<string, unknown> | null;
+  completionScore: number;
+  isCompleted: boolean;
+  startedAt: Date;
+  completedAt: Date | null;
+  lastStepAt: Date;
+}
 
 // ============================================
 // STEP DATA SCHEMAS
@@ -144,7 +168,10 @@ export const OnboardingProgressSchema = z.object({
     .union([GamerIntentSchema, LeaderIntentSchema, SponsorIntentSchema])
     .optional()
     .nullable(),
-  goalsData: z.union([GamerGoalsSchema, LeaderGoalsSchema, SponsorGoalsSchema]).optional().nullable(),
+  goalsData: z
+    .union([GamerGoalsSchema, LeaderGoalsSchema, SponsorGoalsSchema])
+    .optional()
+    .nullable(),
   preferencesData: PreferencesSchema.optional().nullable(),
 
   completionScore: z.number().int().min(0).max(100),
@@ -168,33 +195,55 @@ export const StartOnboardingRequestSchema = z.object({
 
 export type StartOnboardingRequest = z.infer<typeof StartOnboardingRequestSchema>;
 
-export const StartOnboardingResponseSchema = z.object({
+const StartOnboardingDataSchema = z.object({
   progressId: z.string().uuid(),
   selectedRole: OnboardingRoleSchema,
   currentStep: OnboardingStepSchema,
   completionScore: z.number(),
 });
 
+export const StartOnboardingResponseSchema = z.object({
+  success: z.boolean(),
+  data: StartOnboardingDataSchema.optional(),
+  error: z
+    .object({
+      message: z.string(),
+      code: z.string(),
+    })
+    .optional(),
+});
+
 export type StartOnboardingResponse = z.infer<typeof StartOnboardingResponseSchema>;
 
 // Update step data
-export const UpdateStepDataRequestSchema = z.object({
+export const UpdateStepRequestSchema = z.object({
   step: OnboardingStepSchema,
   data: z.record(z.any()), // Generic data object
 });
 
-export type UpdateStepDataRequest = z.infer<typeof UpdateStepDataRequestSchema>;
+export type UpdateStepRequest = z.infer<typeof UpdateStepRequestSchema>;
 
-export const UpdateStepDataResponseSchema = z.object({
+const UpdateStepDataSchema = z.object({
+  currentStep: z.string(),
+  completedSteps: z.array(z.string()),
   completionScore: z.number().int().min(0).max(100),
-  nextStep: OnboardingStepSchema.optional(),
-  isCompleted: z.boolean(),
 });
 
-export type UpdateStepDataResponse = z.infer<typeof UpdateStepDataResponseSchema>;
+export const UpdateStepResponseSchema = z.object({
+  success: z.boolean(),
+  data: UpdateStepDataSchema.optional(),
+  error: z
+    .object({
+      message: z.string(),
+      code: z.string(),
+    })
+    .optional(),
+});
+
+export type UpdateStepResponse = z.infer<typeof UpdateStepResponseSchema>;
 
 // Complete onboarding
-export const CompleteOnboardingResponseSchema = z.object({
+const CompleteOnboardingDataSchema = z.object({
   completionScore: z.number().int().min(0).max(100),
   missingFields: z.array(z.string()),
   recommendations: z.object({
@@ -207,12 +256,67 @@ export const CompleteOnboardingResponseSchema = z.object({
   nextSteps: z.array(z.string()),
 });
 
-export type CompleteOnboardingResponse = z.infer<typeof CompleteOnboardingResponseSchema>;
-
-// Match preview
-export const MatchPreviewSchema = z.object({
-  count: z.number().int().nonnegative(),
-  samples: z.array(z.record(z.any())).max(3),
+export const CompleteOnboardingResponseSchema = z.object({
+  success: z.boolean(),
+  data: CompleteOnboardingDataSchema.optional(),
+  error: z
+    .object({
+      message: z.string(),
+      code: z.string(),
+    })
+    .optional(),
 });
 
-export type MatchPreview = z.infer<typeof MatchPreviewSchema>;
+export type CompleteOnboardingResponse = z.infer<typeof CompleteOnboardingResponseSchema>;
+
+// Get progress
+const GetProgressDataSchema = OnboardingProgressSchema.pick({
+  userId: true,
+  selectedRole: true,
+  currentStep: true,
+  completedSteps: true,
+  completionScore: true,
+  profileData: true,
+  intentData: true,
+  goalsData: true,
+  preferencesData: true,
+  isCompleted: true,
+});
+
+export const GetProgressResponseSchema = z.object({
+  success: z.boolean(),
+  data: GetProgressDataSchema.extend({
+    progressId: z.string(),
+    selectedRole: z.string(),
+    currentStep: z.string(),
+    completedSteps: z.array(z.string()),
+    completionScore: z.number(),
+    profileData: z.record(z.any()).nullable(),
+    intentData: z.record(z.any()).nullable(),
+    goalsData: z.record(z.any()).nullable(),
+    preferencesData: z.record(z.any()).nullable(),
+    isCompleted: z.boolean(),
+  }).optional(),
+  error: z
+    .object({
+      message: z.string(),
+      code: z.string(),
+    })
+    .optional(),
+});
+
+export type GetProgressResponse = z.infer<typeof GetProgressResponseSchema>;
+
+// Match preview
+export const MatchPreviewResponseSchema = z.object({
+  success: z.boolean(),
+  data: z.record(z.number()).optional(),
+  error: z
+    .object({
+      message: z.string(),
+      code: z.string(),
+    })
+    .optional(),
+});
+
+export type MatchPreviewResponse = z.infer<typeof MatchPreviewResponseSchema>;
