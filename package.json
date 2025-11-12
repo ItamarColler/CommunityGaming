@@ -26,14 +26,14 @@
     "db:studio": "turbo run db:studio"
   },
   "devDependencies": {
-    "@turbo/gen": "^1.12.4",
-    "@types/node": "^20.11.0",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
-    "@typescript-eslint/parser": "^6.19.0",
-    "eslint": "^8.56.0",
+    "@turbo/gen": "^2.6.1",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "eslint": "^9.39.1",
     "prettier": "^3.2.5",
     "tsx": "^4.20.6",
-    "turbo": "^2.6.0",
+    "turbo": "^2.6.1",
     "typescript": "^5.9.3"
   },
   "workspaces": [
