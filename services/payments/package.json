@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@community-gaming/config": "workspace:*",
-    "prisma": "^5.8.1",
+    "prisma": "^6.19.0",
     "tsup": "^8.0.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0"
