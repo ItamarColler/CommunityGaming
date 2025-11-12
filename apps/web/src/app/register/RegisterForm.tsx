@@ -111,7 +111,11 @@ export function RegisterForm() {
         edge="end"
         aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
       >
-        {showConfirmPassword ? <EyeClose width={20} height={20} /> : <EyeOpen width={20} height={20} />}
+        {showConfirmPassword ? (
+          <EyeClose width={20} height={20} />
+        ) : (
+          <EyeOpen width={20} height={20} />
+        )}
       </IconButton>
     </InputAdornment>
   );
