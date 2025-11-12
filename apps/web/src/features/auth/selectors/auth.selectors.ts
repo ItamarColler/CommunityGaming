@@ -7,9 +7,15 @@ import type { RootState } from '@/lib/redux/store';
 const selectAuthState = (state: RootState) => state.auth;
 
 /**
- * Select current user
+ * Select current user identity
  */
-export const selectUser = createSelector([selectAuthState], (auth) => auth.user);
+export const selectCurrentUser = createSelector([selectAuthState], (auth) => auth.currentUser);
+
+/**
+ * @deprecated Use selectCurrentUser instead
+ * Kept for backward compatibility during migration
+ */
+export const selectUser = createSelector([selectAuthState], (auth) => auth.currentUser);
 
 /**
  * Select authentication status

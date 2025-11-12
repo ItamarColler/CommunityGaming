@@ -8,6 +8,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================
+// CORE ENUMS
+// ============================================
+
 // User type enumeration
 enum UserType {
   PLAYER
@@ -16,7 +20,114 @@ enum UserType {
   ADMIN
 }
 
-// User account
+// Play style preferences
+enum PlayStyle {
+  CASUAL
+  COMPETITIVE
+  CONTENT_CREATOR
+}
+
+// Personal goal types
+enum GoalType {
+  SKILL
+  RANK
+  SOCIAL
+  CREATIVE
+}
+
+// Achievement motivation preferences
+enum MotivationType {
+  XP
+  RECOGNITION
+  REWARDS
+}
+
+// Content type preferences
+enum ContentType {
+  TOURNAMENTS
+  STREAMS
+  TIPS
+  PRODUCTS
+}
+
+// Communication channel preferences
+enum CommunicationChannel {
+  DISCORD
+  IN_APP
+  EMAIL
+}
+
+// Gamer-specific enums
+enum LongTermVision {
+  STREAMER
+  COMPETITIVE
+  CASUAL_EXPERT
+}
+
+// Leader-specific enums
+enum MissionIntent {
+  GROWTH
+  ENGAGEMENT
+  SPONSORSHIP
+}
+
+enum CollaborationOpenness {
+  OPEN
+  INVITE_ONLY
+}
+
+enum IncentiveSystem {
+  TOKENS
+  BADGES
+  XP
+}
+
+enum AnalyticsMetric {
+  RETENTION
+  ENGAGEMENT
+  REVENUE
+}
+
+// Sponsor-specific enums
+enum BrandCategory {
+  HARDWARE
+  SOFTWARE
+  EVENTS
+  MERCH
+}
+
+enum CampaignObjective {
+  AWARENESS
+  ENGAGEMENT
+  CONVERSION
+}
+
+enum PartnerType {
+  LEADER
+  COMMUNITY
+  TOP_GAMER
+}
+
+enum ConversionMetric {
+  CLICKS
+  SIGNUPS
+  REDEMPTIONS
+}
+
+// Platform types
+enum PlatformType {
+  DISCORD
+  TWITCH
+  STEAM
+  YOUTUBE
+  TWITTER
+}
+
+// ============================================
+// CORE USER MODEL
+// ============================================
+
+// User account - core identity
 model User {
   id           String    @id @default(uuid())
   email        String    @unique
@@ -35,17 +146,161 @@ model User {
   isActive      Boolean  @default(true) @map("is_active")
   isBanned      Boolean  @default(false) @map("is_banned")
 
+  // Identity
+  country       String?  // ISO country code
+  timezone      String?  // IANA timezone (e.g., "America/New_York")
+
+  // Gaming Interests (common across all roles)
+  favoriteGames String[] @default([]) @map("favorite_games") // Array of game names/IDs
+  playStyle     PlayStyle? @map("play_style") // Casual, Competitive, Content Creator
+
+  // Growth Intent (common)
+  goalType            GoalType? @map("goal_type") // Skill, Rank, Social, Creative
+  weeklyCommitment    Int? @map("weekly_commitment") // Hours per week
+  achievementMotivation MotivationType? @map("achievement_motivation") // XP, Recognition, Rewards
+
+  // Discovery Preferences (common)
+  contentTypes          ContentType[] @default([]) @map("content_types") // Tournaments, Streams, Tips, Products
+  communicationChannels CommunicationChannel[] @default([]) @map("communication_channels") // Discord, In-App, Email
+
   // Timestamps
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   lastLoginAt  DateTime? @map("last_login_at")
 
-  // Relations
+  // Relations - Auth
   sessions     Session[]
   refreshTokens RefreshToken[]
 
+  // Relations - Role-specific profiles (polymorphic)
+  gamerProfile   GamerProfile?
+  leaderProfile  LeaderProfile?
+  sponsorProfile SponsorProfile?
+
+  // Relations - Onboarding
+  onboardingProgress OnboardingProgress?
+
   @@map("users")
 }
+
+// ============================================
+// ROLE-SPECIFIC PROFILE MODELS
+// ============================================
+
+// Gamer-specific profile
+model GamerProfile {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Skill Profile
+  currentRank       String?   @map("current_rank") // e.g., "Diamond 2", "Gold III"
+  preferredGameModes String[] @default([]) @map("preferred_game_modes") // e.g., ["Ranked", "Arena", "2v2"]
+
+  // Goal Progression
+  shortTermGoal  String?           @map("short_term_goal") // Free-form text goal
+  longTermVision LongTermVision?   @map("long_term_vision") // Streamer, Competitive, Casual Expert
+
+  // Contribution Willingness
+  willingToMentor    Boolean @default(false) @map("willing_to_mentor")
+  shareAchievements  Boolean @default(true) @map("share_achievements")
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("gamer_profiles")
+  @@index([userId])
+  @@index([currentRank]) // For matchmaking queries
+  @@index([willingToMentor]) // For mentor discovery
+}
+
+// Leader-specific profile (community managers, guild leaders)
+model LeaderProfile {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Community Profile
+  communityName  String  @map("community_name")
+  genreFocus     String  @map("genre_focus") // e.g., "FPS", "MOBA", "RPG"
+  memberSizeGoal Int?    @map("member_size_goal") // Target community size
+
+  // Leadership Goals
+  missionIntent         MissionIntent          @map("mission_intent") // Growth, Engagement, Sponsorship
+  collaborationOpenness CollaborationOpenness  @map("collaboration_openness") // Open, Invite-only
+
+  // Rewards Framework
+  incentiveSystem IncentiveSystem @map("incentive_system") // Tokens, Badges, XP
+
+  // Analytics Interest (JSONB for flexible metrics)
+  desiredMetrics AnalyticsMetric[] @default([]) @map("desired_metrics") // Retention, Engagement, Revenue
+
+  // Platforms connected
+  platforms LeaderPlatform[]
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("leader_profiles")
+  @@index([userId])
+  @@index([genreFocus]) // For community discovery
+  @@index([missionIntent]) // For sponsor matching
+  @@index([collaborationOpenness]) // For visibility filtering
+}
+
+// Junction table: Leader platforms
+model LeaderPlatform {
+  id              String       @id @default(uuid())
+  leaderProfileId String       @map("leader_profile_id")
+  platformType    PlatformType @map("platform_type")
+  platformHandle  String       @map("platform_handle") // Username/URL on that platform
+  isVerified      Boolean      @default(false) @map("is_verified")
+
+  leaderProfile LeaderProfile @relation(fields: [leaderProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([leaderProfileId, platformType]) // One entry per platform per leader
+  @@map("leader_platforms")
+  @@index([leaderProfileId])
+}
+
+// Sponsor/Supplier-specific profile (brands, advertisers)
+model SponsorProfile {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Brand Profile
+  brandName     String          @map("brand_name")
+  category      BrandCategory   @map("category") // Hardware, Software, Events, Merch
+  targetAudience String[]       @default([]) @map("target_audience") // Game genres: ["FPS", "MMO", "RPG"]
+
+  // Campaign Goals
+  objective   CampaignObjective @map("objective") // Awareness, Engagement, Conversion
+  budgetRange Int?              @map("budget_range") // Monthly budget in cents
+
+  // Collaboration Interest
+  preferredPartnerTypes PartnerType[] @default([]) @map("preferred_partner_types") // Leader, Community, Top Gamer
+
+  // Performance Metrics
+  conversionMetrics ConversionMetric[] @default([]) @map("conversion_metrics") // Clicks, Signups, Redemptions
+
+  // Metadata
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sponsor_profiles")
+  @@index([userId])
+  @@index([category]) // For sponsor discovery
+  @@index([objective]) // For campaign matching
+}
+
+// ============================================
+// SESSION MANAGEMENT (unchanged)
+// ============================================
 
 // Session management
 model Session {
@@ -75,4 +330,37 @@ model RefreshToken {
   @@index([userId])
   @@index([expiresAt])
   @@map("refresh_tokens")
+}
+
+// ============================================
+// ONBOARDING PROGRESS TRACKING
+// ============================================
+
+// Onboarding progress model
+model OnboardingProgress {
+  id              String   @id @default(uuid())
+  userId          String   @unique @map("user_id")
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  selectedRole    String   @map("selected_role") // "gamer", "leader", "sponsor"
+  currentStep     String   @map("current_step")  // "welcome", "profile", "intent", "goals", "preferences", "complete"
+  completedSteps  String[] @default([]) @map("completed_steps")
+
+  // Step data (JSONB for flexibility)
+  profileData     Json?    @map("profile_data")
+  intentData      Json?    @map("intent_data")
+  goalsData       Json?    @map("goals_data")
+  preferencesData Json?    @map("preferences_data")
+
+  completionScore Int      @default(0) @map("completion_score") // 0-100
+  isCompleted     Boolean  @default(false) @map("is_completed")
+
+  startedAt       DateTime @default(now()) @map("started_at")
+  completedAt     DateTime? @map("completed_at")
+  lastStepAt      DateTime @default(now()) @map("last_step_at")
+
+  @@map("onboarding_progress")
+  @@index([userId])
+  @@index([isCompleted])
+  @@index([selectedRole])
 }
