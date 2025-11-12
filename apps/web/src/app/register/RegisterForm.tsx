@@ -11,6 +11,7 @@ import { InputAdornment, IconButton } from '@mui/material';
 import EyeOpen from '@assets/icons/eyeOpen.svg';
 import EyeClose from '@assets/icons/eyeClose.svg';
 import styles from './register.module.css';
+import { SensitiveData } from '@/components/SensitiveData/SensitiveData';
 
 export function RegisterForm() {
   const router = useRouter();
@@ -121,143 +122,145 @@ export function RegisterForm() {
   );
 
   return (
-    <div className={styles.registerFormContainer}>
-      <div className={styles.registerCard}>
-        <div className={styles.registerHeader}>
-          <h1>Create Account</h1>
-          <p>Join CommunityGaming today</p>
-        </div>
+    <SensitiveData>
+      <div className={styles.registerFormContainer}>
+        <div className={styles.registerCard}>
+          <div className={styles.registerHeader}>
+            <h1>Create Account</h1>
+            <p>Join CommunityGaming today</p>
+          </div>
 
-        <form onSubmit={handleSubmit} className={styles.registerForm}>
-          {/* Success message */}
-          {successMessage && (
-            <div className={styles.successBanner}>
-              <span className={styles.successIcon}>✓</span>
-              <span>{successMessage}</span>
+          <form onSubmit={handleSubmit} className={styles.registerForm}>
+            {/* Success message */}
+            {successMessage && (
+              <div className={styles.successBanner}>
+                <span className={styles.successIcon}>✓</span>
+                <span>{successMessage}</span>
+              </div>
+            )}
+
+            {/* Global error message */}
+            {serverError && (
+              <div className={styles.errorBanner}>
+                <span className={styles.errorIcon}>⚠️</span>
+                <span>{serverError}</span>
+              </div>
+            )}
+
+            {/* Username field */}
+            <div className={styles.formField}>
+              <Input
+                id="username"
+                inputType="text"
+                label="Username"
+                value={formData.username}
+                setParentValue={(value) => handleInputChange('username', String(value))}
+                placeholder="johndoe"
+                disabled={isLoading}
+                error={!!validationErrors.username}
+                helperText={
+                  validationErrors.username ||
+                  '3-30 characters, letters, numbers, underscores, and hyphens only'
+                }
+                autoComplete="username"
+                required
+              />
             </div>
-          )}
 
-          {/* Global error message */}
-          {serverError && (
-            <div className={styles.errorBanner}>
-              <span className={styles.errorIcon}>⚠️</span>
-              <span>{serverError}</span>
+            {/* Display Name field */}
+            <div className={styles.formField}>
+              <Input
+                id="displayName"
+                inputType="text"
+                label="Display Name"
+                value={formData.displayName}
+                setParentValue={(value) => handleInputChange('displayName', String(value))}
+                placeholder="John Doe (optional)"
+                disabled={isLoading}
+                error={!!validationErrors.displayName}
+                helperText={validationErrors.displayName}
+                autoComplete="name"
+                required={false}
+              />
             </div>
-          )}
 
-          {/* Username field */}
-          <div className={styles.formField}>
-            <Input
-              id="username"
-              inputType="text"
-              label="Username"
-              value={formData.username}
-              setParentValue={(value) => handleInputChange('username', String(value))}
-              placeholder="johndoe"
-              disabled={isLoading}
-              error={!!validationErrors.username}
-              helperText={
-                validationErrors.username ||
-                '3-30 characters, letters, numbers, underscores, and hyphens only'
-              }
-              autoComplete="username"
-              required
-            />
+            {/* Email field */}
+            <div className={styles.formField}>
+              <Input
+                id="email"
+                inputType="email"
+                label="Email"
+                value={formData.email}
+                setParentValue={(value) => handleInputChange('email', String(value))}
+                placeholder="you@example.com"
+                disabled={isLoading}
+                error={!!validationErrors.email}
+                helperText={validationErrors.email}
+                autoComplete="email"
+                required
+              />
+            </div>
+
+            {/* Password field */}
+            <div className={styles.formField}>
+              <Input
+                id="password"
+                inputType={showPassword ? 'text' : 'password'}
+                label="Password"
+                value={formData.password}
+                setParentValue={(value) => handleInputChange('password', String(value))}
+                placeholder="Enter your password"
+                disabled={isLoading}
+                error={!!validationErrors.password}
+                helperText={
+                  validationErrors.password ||
+                  'Minimum 8 characters with uppercase, lowercase, number, and special character'
+                }
+                autoComplete="new-password"
+                required
+                slotProps={{
+                  input: {
+                    endAdornment: passwordAdornment,
+                  },
+                }}
+              />
+            </div>
+
+            {/* Confirm Password field */}
+            <div className={styles.formField}>
+              <Input
+                id="confirmPassword"
+                inputType={showConfirmPassword ? 'text' : 'password'}
+                label="Confirm Password"
+                value={formData.confirmPassword}
+                setParentValue={(value) => handleInputChange('confirmPassword', String(value))}
+                placeholder="Confirm your password"
+                disabled={isLoading}
+                error={!!validationErrors.confirmPassword}
+                helperText={validationErrors.confirmPassword}
+                autoComplete="new-password"
+                required
+                slotProps={{
+                  input: {
+                    endAdornment: confirmPasswordAdornment,
+                  },
+                }}
+              />
+            </div>
+
+            {/* Submit button */}
+            <button type="submit" className={styles.submitButton} disabled={isLoading}>
+              {isLoading ? 'Creating Account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <div className={styles.registerFooter}>
+            <p>
+              Already have an account? <a href="/login">Sign in</a>
+            </p>
           </div>
-
-          {/* Display Name field */}
-          <div className={styles.formField}>
-            <Input
-              id="displayName"
-              inputType="text"
-              label="Display Name"
-              value={formData.displayName}
-              setParentValue={(value) => handleInputChange('displayName', String(value))}
-              placeholder="John Doe (optional)"
-              disabled={isLoading}
-              error={!!validationErrors.displayName}
-              helperText={validationErrors.displayName}
-              autoComplete="name"
-              required={false}
-            />
-          </div>
-
-          {/* Email field */}
-          <div className={styles.formField}>
-            <Input
-              id="email"
-              inputType="email"
-              label="Email"
-              value={formData.email}
-              setParentValue={(value) => handleInputChange('email', String(value))}
-              placeholder="you@example.com"
-              disabled={isLoading}
-              error={!!validationErrors.email}
-              helperText={validationErrors.email}
-              autoComplete="email"
-              required
-            />
-          </div>
-
-          {/* Password field */}
-          <div className={styles.formField}>
-            <Input
-              id="password"
-              inputType={showPassword ? 'text' : 'password'}
-              label="Password"
-              value={formData.password}
-              setParentValue={(value) => handleInputChange('password', String(value))}
-              placeholder="Enter your password"
-              disabled={isLoading}
-              error={!!validationErrors.password}
-              helperText={
-                validationErrors.password ||
-                'Minimum 8 characters with uppercase, lowercase, number, and special character'
-              }
-              autoComplete="new-password"
-              required
-              slotProps={{
-                input: {
-                  endAdornment: passwordAdornment,
-                },
-              }}
-            />
-          </div>
-
-          {/* Confirm Password field */}
-          <div className={styles.formField}>
-            <Input
-              id="confirmPassword"
-              inputType={showConfirmPassword ? 'text' : 'password'}
-              label="Confirm Password"
-              value={formData.confirmPassword}
-              setParentValue={(value) => handleInputChange('confirmPassword', String(value))}
-              placeholder="Confirm your password"
-              disabled={isLoading}
-              error={!!validationErrors.confirmPassword}
-              helperText={validationErrors.confirmPassword}
-              autoComplete="new-password"
-              required
-              slotProps={{
-                input: {
-                  endAdornment: confirmPasswordAdornment,
-                },
-              }}
-            />
-          </div>
-
-          {/* Submit button */}
-          <button type="submit" className={styles.submitButton} disabled={isLoading}>
-            {isLoading ? 'Creating Account...' : 'Create Account'}
-          </button>
-        </form>
-
-        <div className={styles.registerFooter}>
-          <p>
-            Already have an account? <a href="/login">Sign in</a>
-          </p>
         </div>
       </div>
-    </div>
+    </SensitiveData>
   );
 }

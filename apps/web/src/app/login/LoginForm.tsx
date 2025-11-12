@@ -9,6 +9,7 @@ import { LoginRequestSchema, type LoginRequest } from '@community-gaming/types';
 import EyeOpen from '@assets/icons/eyeOpen.svg';
 import EyeClose from '@assets/icons/eyeClose.svg';
 import styles from './login.module.css';
+import { SensitiveData } from '@/components/SensitiveData/SensitiveData';
 
 export function LoginForm() {
   const router = useRouter();
@@ -74,88 +75,90 @@ export function LoginForm() {
   };
 
   return (
-    <div className={styles.loginFormContainer}>
-      <div className={styles.loginCard}>
-        <div className={styles.loginHeader}>
-          <h1>Welcome Back</h1>
-          <p>Sign in to your CommunityGaming account</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className={styles.loginForm}>
-          {/* Global error message */}
-          {error && (
-            <div className={styles.errorBanner}>
-              <span className={styles.errorIcon}>⚠️</span>
-              <span>{error}</span>
-            </div>
-          )}
-
-          {/* Email field */}
-          <div className={styles.formField}>
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              placeholder="you@example.com"
-              disabled={isLoading}
-              className={validationErrors.email ? 'error' : ''}
-              autoComplete="email"
-            />
-            {validationErrors.email && (
-              <span className={styles.fieldError}>{validationErrors.email}</span>
-            )}
+    <SensitiveData>
+      <div className={styles.loginFormContainer}>
+        <div className={styles.loginCard}>
+          <div className={styles.loginHeader}>
+            <h1>Welcome Back</h1>
+            <p>Sign in to your CommunityGaming account</p>
           </div>
 
-          {/* Password field */}
-          <div className={styles.formField}>
-            <label htmlFor="password">Password</label>
-            <div className={styles.passwordInputWrapper}>
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                value={formData.password}
-                onChange={(e) => handleInputChange('password', e.target.value)}
-                placeholder="Enter your password"
-                disabled={isLoading}
-                className={validationErrors.password ? 'error' : ''}
-                autoComplete="current-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className={styles.togglePassword}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? (
-                  <EyeClose width={20} height={20} />
-                ) : (
-                  <EyeOpen width={20} height={20} />
-                )}
-              </button>
-            </div>
-            {validationErrors.password && (
-              <span className={styles.fieldError}>{validationErrors.password}</span>
+          <form onSubmit={handleSubmit} className={styles.loginForm}>
+            {/* Global error message */}
+            {error && (
+              <div className={styles.errorBanner}>
+                <span className={styles.errorIcon}>⚠️</span>
+                <span>{error}</span>
+              </div>
             )}
-            <p className={styles.passwordHint}>
-              Password must be at least 8 characters with uppercase, lowercase, number, and special
-              character
+
+            {/* Email field */}
+            <div className={styles.formField}>
+              <label htmlFor="email">Email</label>
+              <input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                placeholder="you@example.com"
+                disabled={isLoading}
+                className={validationErrors.email ? 'error' : ''}
+                autoComplete="email"
+              />
+              {validationErrors.email && (
+                <span className={styles.fieldError}>{validationErrors.email}</span>
+              )}
+            </div>
+
+            {/* Password field */}
+            <div className={styles.formField}>
+              <label htmlFor="password">Password</label>
+              <div className={styles.passwordInputWrapper}>
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  placeholder="Enter your password"
+                  disabled={isLoading}
+                  className={validationErrors.password ? 'error' : ''}
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={styles.togglePassword}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <EyeClose width={20} height={20} />
+                  ) : (
+                    <EyeOpen width={20} height={20} />
+                  )}
+                </button>
+              </div>
+              {validationErrors.password && (
+                <span className={styles.fieldError}>{validationErrors.password}</span>
+              )}
+              <p className={styles.passwordHint}>
+                Password must be at least 8 characters with uppercase, lowercase, number, and
+                special character
+              </p>
+            </div>
+
+            {/* Submit button */}
+            <button type="submit" className={styles.submitButton} disabled={isLoading}>
+              {isLoading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+
+          <div className={styles.loginFooter}>
+            <p>
+              Don't have an account? <a href="/register">Sign up</a>
             </p>
           </div>
-
-          {/* Submit button */}
-          <button type="submit" className={styles.submitButton} disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
-
-        <div className={styles.loginFooter}>
-          <p>
-            Don't have an account? <a href="/register">Sign up</a>
-          </p>
         </div>
       </div>
-    </div>
+    </SensitiveData>
   );
 }
